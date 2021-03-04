@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1 Welcome to Clinica 
+  .w3-container
+    h2 Listagem de Pedidos
+    p 
+    table.w3-table-all.w3-card-4
+      tr
+        th Número de Pedido
+        th Data
+        th Estado 
+        th Opcoes
+      each elemento in all  
+        tr
+          td=elemento.idMarcacao
+          td=elemento.data
+          td=elemento.estadoP
+          td 
+            button.w3-button.w3-teal Ver
+            b
+            button.w3-button.w3-red Cancelar
+            b
+            button.w3-button.w3-purple Finalizar
+
+
+
