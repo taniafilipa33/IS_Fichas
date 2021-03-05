@@ -1,5 +1,6 @@
 use clinica;
-INSERT into Marcacao (idMarcacao, mensagem, data, estadoP) values(1,"XIIIHoje às 16:35MSH|^~\&|AIDA|AIDA|PACS|PACS|201504051157||ORM^O01|A2015040511    5751000002533|P|2.5|||AL|    PID|||50626||CONCEICAO    SERRANO    SEQUEIRA^MARIA^^||19411012|F||||||||||28006303|    PV1||I|INT||||||||||||||||15002727|        ORC|NW|4727374|4727374||||||20150405111053|    OBR|01|4727374|4727374|M10405^TORAX,    UMA    INCIDENCIA|||||||||||^^^|||CR|RXE||||||30||^^^20150405115723^^    0||||||",'2021-03-04 16:35:00','Pendente');
+
+INSERT into Marcacao (idMarcacao, mensagem, data, estadoP) values(1,"MSH|^~\&|AIDA|AIDA|PACS|PACS|201504051157||ORM^O01|A2015040511    5751000002533|P|2.5|||AL|    PID|||50626||CONCEICAO    SERRANO    SEQUEIRA^MARIA^^||19411012|F||||||||||28006303|    PV1||I|INT||||||||||||||||15002727|        ORC|NW|4727374|4727374||||||20150405111053|    OBR|01|4727374|4727374|M10405^TORAX,    UMA    INCIDENCIA|||||||||||^^^|||CR|RXE||||||30||^^^20150405115723^^    0||||||",'2021-03-04 16:35:00','Pendente');
 
 
 ALTER TABLE ProfissionalSaude
@@ -28,3 +29,8 @@ VALUES ("Aceite", "Raio-X ao joelho", "Raio-X", 1, 1, 1, 1, "N\A");
 
 
 use hospital;
+INSERT INTO Consulta (descricao, idPS, idPaciente) Values ("Oftalmologia", 1, 1);
+INSERT INTO Paciente (nome, dataNascimento, numProcesso, morada, telefone) Values ("Joseph Joestar", '2020-02-01', 123, "America", 1234567);
+INSERT INTO ProfissionaisSaude (nome, dataNascimento) Values ('Tacos Cunha', '2020-01-01');
+INSERT INTO Especialidade (descricao) Values ("Oftalmologia");
+INSERT INTO ProfissionaisSaude_has_Especialidade (idProfissionalSaude, idEspecialidade) VALUES (1, 1);

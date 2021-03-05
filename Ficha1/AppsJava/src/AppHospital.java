@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -7,7 +10,10 @@ public class AppHospital {
     private static final String password = "12345678";
     private static final String database = "hospital";
 
-    public static int nbyn() throws SQLException {
+    public static int nbyn() throws SQLException, IOException {
+        File myObj = new File("FSHospital.txt");
+        FileWriter myWriter = new FileWriter("FSHospital.txt");
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
@@ -48,6 +54,9 @@ public class AppHospital {
             else if (opcao == 2) {
                 System.out.println("Insira a mensagem:");
                 String mensagem = new Scanner(System.in).nextLine();
+                myWriter.write(mensagem +"\n");
+                myWriter.close();
+
                 System.out.println("Insira o id da consulta:");
                 int idConsulta = new Scanner(System.in).nextInt();
                 System.out.println("Insira o número de exames que pretende pedir:");
@@ -108,7 +117,7 @@ public class AppHospital {
         // int res = run();
         try {
             int nbyn = nbyn();
-        } catch (SQLException throwables) {
+        } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
     }
