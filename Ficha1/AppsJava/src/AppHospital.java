@@ -1,16 +1,50 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import ca.uhn.hl7v2.DefaultHapiContext;
+import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.HapiContext;
+import ca.uhn.hl7v2.model.v24.message.ADT_A01;
+import ca.uhn.hl7v2.model.v24.message.ORM_O01;
+import ca.uhn.hl7v2.parser.Parser;
+
+import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
 
 public class AppHospital {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "12345678";
+    private static final String password = "password";
     private static final String database = "hospital";
+    private static HapiContext context = new DefaultHapiContext();
 
-    public static int nbyn() throws SQLException, IOException {
+    private static void writeMessageToFile(Parser parser, ORM_O01 adtMessage, String outputFilename)
+            throws IOException, FileNotFoundException, HL7Exception {
+        OutputStream outputStream = null;
+        try {
+
+            // Remember that the file may not show special delimiter characters when using
+            // plain text editor
+            File file = new File(outputFilename);
+
+            // quick check to create the file before writing if it does not exist already
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            System.out.println("Serializing message to file...");
+            outputStream = new FileOutputStream(file);
+            outputStream.write(parser.encode(adtMessage).getBytes());
+            outputStream.flush();
+
+            System.out.printf("Message serialized to file '%s' successfully", file);
+            System.out.println("\n");
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
+
+    public static int nbyn() throws SQLException, IOException, HL7Exception {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -48,8 +82,24 @@ public class AppHospital {
                 }
             }
             else if (opcao == 2) {
-                System.out.println("Insira a mensagem:");
-                String mensagem = new Scanner(System.in).nextLine();
+                Parser xmlParser = context.getXMLParser();
+                System.out.println("Insira o identificado do paciente:");
+                int idPaciente = new Scanner(System.in).nextInt();
+                String select1 = "SELECT * from Paciente where idPaciente = "+idPaciente;
+                ResultSet rs1 = st.executeQuery(select1);
+                String nome= "";
+                int numProcesso = 0;
+                String morada ="";
+                while (rs1.next()) {
+                    nome = rs1.getString("nome");
+                    numProcesso = rs1.getInt("numProcesso");
+                    morada = rs1.getString("morada");
+                }
+                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,1,"o","o" );
+                System.out.println("Message was constructed successfully..." + "\n");
+                System.out.println("Printing message structure to console...");
+                System.out.println(ormMessage.printStructure(false));
+                String mensagem = ormMessage.printStructure(false);
 
                 System.out.println("Insira o id da consulta:");
                 int idConsulta = new Scanner(System.in).nextInt();
@@ -67,9 +117,11 @@ public class AppHospital {
                 while (rs.next()) {
                     idPedido = rs.getInt(1);
                 }
+                /*
                 FileWriter myWriter = new FileWriter("FSHospital"+idPedido+".txt");
                 myWriter.write(mensagem +"\n");
-                myWriter.close();
+                myWriter.close();*/
+                writeMessageToFile(xmlParser, ormMessage, "testXmlOutputFile"+idPedido+".xml");
                 }
             else if (opcao == 3) {
                 System.out.println("Insira o id do pedido que pretende cancelar: ");
@@ -123,7 +175,7 @@ public class AppHospital {
         // int res = run();
         try {
             int nbyn = nbyn();
-        } catch (SQLException | IOException throwables) {
+        } catch (SQLException | IOException | HL7Exception throwables) {
             throwables.printStackTrace();
         }
     }

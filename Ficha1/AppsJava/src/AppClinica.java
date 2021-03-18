@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class AppClinica {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "12345678";
+    private static final String password = "password";
     private static final String database = "clinica";
 
     public static int nbyn() throws SQLException {

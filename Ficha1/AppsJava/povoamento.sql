@@ -32,5 +32,7 @@ drop table Pedido;
 
 
 use hospital;
+select * from Paciente;
+select * from Pedido;
 INSERT INTO Consulta (descricao, idPaciente) Values ("Oftalmologia", 1);
 INSERT INTO Paciente (nome, dataNascimento, numProcesso, morada, telefone) Values ("Joseph Joestar", '2020-02-01', 123, "America", 1234567);

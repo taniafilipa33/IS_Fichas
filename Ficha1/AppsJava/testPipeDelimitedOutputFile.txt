@@ -1,0 +1,1 @@
+MSH|^~\&|Our System|Our Facility|Their Remote System|Their Remote Facility|20210317130338||ADT^A01^ADT_A01|123420210317130338|P|2.4EVN|A01|20210317130338PID|||numProcesso||familyName^name||||||adressPV1||O|Some Point of Care^^^Some Treatment Facility Name|ALERT||||99999999^Smith^Jack^^^^^^^^^^456789||||||||||||||||||||||||||||||||||||20210317130338
