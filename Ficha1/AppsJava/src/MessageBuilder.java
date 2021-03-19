@@ -65,16 +65,6 @@ public class MessageBuilder {
     private void createPv1Segment() throws DataTypeException {
         PV1 pv1 = _ormMessage.getPATIENT().getPATIENT_VISIT().getPV1();
         pv1.getPatientClass().setValue("O"); // to represent an 'Outpatient'
-        PL assignedPatientLocation = pv1.getAssignedPatientLocation();
-        assignedPatientLocation.getFacility().getNamespaceID().setValue("Some Treatment Facility Name");
-        assignedPatientLocation.getPointOfCare().setValue("Some Point of Care");
-        pv1.getAdmissionType().setValue("ALERT");
-        XCN referringDoctor = pv1.getReferringDoctor(0);
-        referringDoctor.getIDNumber().setValue("99999999");
-        referringDoctor.getFamilyName().getSurname().setValue("Smith");
-        referringDoctor.getGivenName().setValue("Jack");
-        referringDoctor.getIdentifierTypeCode().setValue("456789");
-        pv1.getAdmitDateTime().getTimeOfAnEvent().setValue(getCurrentTimeStamp());
     }
 /*
     private void createIN1Segment() throws DataTypeException {

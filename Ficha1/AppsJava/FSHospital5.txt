@@ -1,0 +1,1 @@
+MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210319101532||ORM^001^ORM_O01|123420210319101532|P|2.4PID|||123||^Joseph Joestar||||||AmericaPV1||OORC|NW||||||||20210319101532OBR|5|||MSHUi^exame ao torax

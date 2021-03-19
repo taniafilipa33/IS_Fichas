@@ -29,20 +29,21 @@ public class HapiCreateMessageSimpleExample {
             // create these parsers for file operations
             Parser pipeParser = context.getPipeParser();
             Parser xmlParser = context.getXMLParser();
+            Parser txtParser = context.getGenericParser();
 
             // print out the message that we constructed
             System.out.println("Message was constructed successfully..." + "\n");
             System.out.println(pipeParser.encode(adtMessage));
 
             // serialize the message to pipe delimited output file
-           // writeMessageToFile(pipeParser, adtMessage, "testPipeDelimitedOutputFile.txt");
+           writeMessageToFile(pipeParser, adtMessage, "testPipeDelimitedOutputFile.txt");
 
             // serialize the message to XML format output file
             //writeMessageToFile(xmlParser, adtMessage, "testXmlOutputFile.xml");
 
             //you can print out the message structure using a convenient helper method on the message class
             System.out.println("Printing message structure to console...");
-            System.out.println(adtMessage.printStructure(false));
+            System.out.println(adtMessage);
 
 
         } catch (Exception e) {

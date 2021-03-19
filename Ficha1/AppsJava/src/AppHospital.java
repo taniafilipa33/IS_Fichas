@@ -82,7 +82,8 @@ public class AppHospital {
                 }
             }
             else if (opcao == 2) {
-                Parser xmlParser = context.getXMLParser();
+                Parser pipeParser = context.getPipeParser();
+
                 System.out.println("Insira o identificado do paciente:");
                 int idPaciente = new Scanner(System.in).nextInt();
                 String select1 = "SELECT * from Paciente where idPaciente = "+idPaciente;
@@ -95,12 +96,18 @@ public class AppHospital {
                     numProcesso = rs1.getInt("numProcesso");
                     morada = rs1.getString("morada");
                 }
-                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,1,"o","o" );
-                System.out.println("Message was constructed successfully..." + "\n");
-                System.out.println("Printing message structure to console...");
-                System.out.println(ormMessage.printStructure(false));
-                String mensagem = ormMessage.printStructure(false);
-
+                String select = "SELECT max(idPedido) from Pedido";
+                ResultSet rs = st.executeQuery(select);
+                int idPedido = 0;
+                while (rs.next()) {
+                    idPedido = rs.getInt(1);
+                }
+                System.out.println("Código do exame a realizar:");
+                String codigo = new Scanner(System.in).nextLine();
+                System.out.println("Descrição do exame a realizar:");
+                String exame = new Scanner(System.in).nextLine();
+                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,idPedido+1,exame,codigo );
+                String mensagem = pipeParser.encode(ormMessage);
                 System.out.println("Insira o id da consulta:");
                 int idConsulta = new Scanner(System.in).nextInt();
 
@@ -111,17 +118,11 @@ public class AppHospital {
                 String query = "INSERT IGNORE INTO Pedido (mensagem, estado, data, idConsulta) VALUES(\""+ mensagem +"\",\""+estado+"\", (select CURDATE()),"+ idConsulta +" )";
                 st.executeUpdate(query);
                 System.out.println("O seu pedido foi inserido!");
-                String select = "SELECT max(idPedido) from Pedido";
-                ResultSet rs = st.executeQuery(select);
-                int idPedido = 0;
-                while (rs.next()) {
-                    idPedido = rs.getInt(1);
-                }
                 /*
                 FileWriter myWriter = new FileWriter("FSHospital"+idPedido+".txt");
                 myWriter.write(mensagem +"\n");
                 myWriter.close();*/
-                writeMessageToFile(xmlParser, ormMessage, "testXmlOutputFile"+idPedido+".xml");
+                writeMessageToFile(pipeParser, ormMessage, "FSHospital"+(idPedido+1)+".txt");
                 }
             else if (opcao == 3) {
                 System.out.println("Insira o id do pedido que pretende cancelar: ");
@@ -142,8 +143,8 @@ public class AppHospital {
                 String query = "select * from Pedido;";
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
-                    id = (rs.getInt("idPedido"));
-                    mensagem = (rs.getString("mensagem"));
+                    id = rs.getInt("idPedido");
+                    mensagem = rs.getString("mensagem");
                     data = rs.getDate("data");
                     estado = rs.getString("estado");
                     idConsulta = rs.getInt("idConsulta");
