@@ -21,7 +21,7 @@ public class MessageBuilder {
      * own. I will use fictional data here for illustration
      */
 
-    public ORM_O01 Build(String name, String numProcesso, String adress, int idPedido, String exame, String codigo) throws HL7Exception, IOException {
+    public ORM_O01 Build(String name, String numProcesso, String adress, int idPedido, String exame, String codigo, String estadoPedido) throws HL7Exception, IOException {
         String currentDateTimeString = getCurrentTimeStamp();
         _ormMessage = new ORM_O01();
         _ormMessage.initQuickstart("ORM", "001", "P");
@@ -29,7 +29,7 @@ public class MessageBuilder {
        // createEvnSegment(currentDateTimeString);
         createPidSegment(name, numProcesso, adress);
         createPv1Segment();
-        createORCSegment();
+        createORCSegment(estadoPedido);
         createOBR1Segment(idPedido, codigo, exame);
         return _ormMessage;
     }
@@ -72,9 +72,9 @@ public class MessageBuilder {
         in1.
     }*/
 
-    private void createORCSegment() throws DataTypeException {
+    private void createORCSegment(String estadoPedido) throws DataTypeException {
         ORC orc = _ormMessage.getORDER().getORC();
-        orc.getOrderControl().setValue("NW"); //new order
+        orc.getOrderControl().setValue(estadoPedido); //new order
         orc.getDateTimeOfTransaction().getTimeOfAnEvent().setValue(getCurrentTimeStamp());
     }
 

@@ -1,3 +1,13 @@
+import ca.uhn.hl7v2.DefaultHapiContext;
+import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.HapiContext;
+import ca.uhn.hl7v2.model.v24.message.ORM_O01;
+import ca.uhn.hl7v2.parser.Parser;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -6,8 +16,38 @@ public class AppClinica {
     private static final String usrName = "root";
     private static final String password = "password";
     private static final String database = "clinica";
+    private static HapiContext context = new DefaultHapiContext();
 
-    public static int nbyn() throws SQLException {
+    private static void writeMessageToFile(Parser parser, ORM_O01 adtMessage, String outputFilename)
+            throws IOException, FileNotFoundException, HL7Exception {
+        OutputStream outputStream = null;
+        try {
+
+            // Remember that the file may not show special delimiter characters when using
+            // plain text editor
+            File file = new File(outputFilename);
+
+            // quick check to create the file before writing if it does not exist already
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            System.out.println("Serializing message to file...");
+            outputStream = new FileOutputStream(file);
+            outputStream.write(parser.encode(adtMessage).getBytes());
+            outputStream.flush();
+
+            System.out.printf("Message serialized to file '%s' successfully", file);
+            System.out.println("\n");
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
+
+
+    public static int nbyn() throws SQLException, IOException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
@@ -59,8 +99,19 @@ public class AppClinica {
                 estado += timestamp;
                 s = "update Pedido"
                         + " set estado = \""+estado+"\" where idPedido =" + id + " ;";
+
                 st.executeUpdate(s);
                 System.out.println("O exame com o id " + id + " foi cancelado!");
+                String encoding = "UTF-8";
+                byte[] encoded = Files.readAllBytes(Paths.get("FSHospital"+id+".txt"));
+                String mensagem = new String(encoded, encoding);
+
+                String response = mensagem.replaceAll("NW", "CA");
+                System.out.println(response);
+                FileWriter writer = new FileWriter("FSHospital"+id+".txt");
+                writer.write(response);
+                writer.flush();
+
             } else if (opcao == 3) {
                 System.out.println("Insira o id do pedido que pretende aceitar: ");
                 int id = new Scanner(System.in).nextInt();
@@ -91,7 +142,7 @@ public class AppClinica {
         // int res = run();
         try {
             int nbyn = nbyn();
-        } catch (SQLException throwables) {
+        } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
     }

@@ -5,6 +5,7 @@ import ca.uhn.hl7v2.model.v24.message.ADT_A01;
 import ca.uhn.hl7v2.model.v24.message.ORM_O01;
 import ca.uhn.hl7v2.parser.Parser;
 
+import java.awt.*;
 import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
@@ -106,7 +107,7 @@ public class AppHospital {
                 String codigo = new Scanner(System.in).nextLine();
                 System.out.println("Descrição do exame a realizar:");
                 String exame = new Scanner(System.in).nextLine();
-                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,idPedido+1,exame,codigo );
+                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,idPedido+1,exame,codigo, "NW" );
                 String mensagem = pipeParser.encode(ormMessage);
                 System.out.println("Insira o id da consulta:");
                 int idConsulta = new Scanner(System.in).nextInt();
@@ -115,16 +116,14 @@ public class AppHospital {
                 String estado = "Pendente ";
                 estado += timestamp;
 
-                String query = "INSERT IGNORE INTO Pedido (mensagem, estado, data, idConsulta) VALUES(\""+ mensagem +"\",\""+estado+"\", (select CURDATE()),"+ idConsulta +" )";
+                String query = "INSERT IGNORE INTO Pedido (mensagem, estado, data, idConsulta,relatorio, codigoExame, descExame) VALUES(\""+ mensagem +"\",\""+estado+"\", (select CURDATE()),"+ idConsulta +",null,\""+codigo+"\","+"\""+exame+"\")";
                 st.executeUpdate(query);
                 System.out.println("O seu pedido foi inserido!");
-                /*
-                FileWriter myWriter = new FileWriter("FSHospital"+idPedido+".txt");
-                myWriter.write(mensagem +"\n");
-                myWriter.close();*/
                 writeMessageToFile(pipeParser, ormMessage, "FSHospital"+(idPedido+1)+".txt");
                 }
             else if (opcao == 3) {
+                Parser pipeParser = context.getPipeParser();
+
                 System.out.println("Insira o id do pedido que pretende cancelar: ");
                 int id = new Scanner(System.in).nextInt();
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -132,8 +131,40 @@ public class AppHospital {
                 estado += timestamp;
                 String s;
                 s = "update Pedido"
-                        + " set estado = \""+ estado +"\" where idPedido =" + id + " ;";
+                        + " set estado = \""+ estado +"\" where idPedido =" + id + ";";
                 st.executeUpdate(s);
+
+                String select = "SELECT * from Pedido where idPedido =" + id +";";
+                ResultSet rs = st.executeQuery(select);
+                String exame ="";
+                String codigo ="";
+                int idConsulta = 0;
+                while (rs.next()) {
+                    exame = rs.getString("descExame");
+                    codigo = rs.getString("codigoExame");
+                    idConsulta = rs.getInt("idConsulta");
+                }
+
+                String select2 = "SELECT * from Consulta where idConsulta =" + idConsulta +";";
+                ResultSet rs2 = st.executeQuery(select2);
+                int idPaciente = 0;
+                while (rs2.next()) {
+                    idPaciente = rs2.getInt("idPaciente");
+                }
+
+                String select3 = "SELECT * from Paciente where idPaciente =" + idPaciente +";";
+                ResultSet rs3 = st.executeQuery(select3);
+                String nome ="";
+                String morada = "";
+                int numProcesso = 0;
+                while (rs3.next()) {
+                    nome = rs3.getString("nome");
+                    morada = rs3.getString("morada");
+                    numProcesso = rs3.getInt("numProcesso");
+
+                }
+                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,id,exame,codigo, "CA" );
+                writeMessageToFile(pipeParser, ormMessage, "FSHospital"+id+".txt");
                 System.out.println("O pedido com o id " + id + "foi cancelado!");
             } else if (opcao == 4) {
                 int id, idConsulta;
