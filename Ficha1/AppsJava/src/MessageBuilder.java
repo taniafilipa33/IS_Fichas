@@ -14,6 +14,7 @@ import ca.uhn.hl7v2.model.v24.segment.*;
 public class MessageBuilder {
 
     private static ORM_O01 _ormMessage;
+    private static ORU_R01 _oruMessage;
 
     /*
      * You can pass in a domain object as a parameter when integrating with data
@@ -32,6 +33,20 @@ public class MessageBuilder {
         createORCSegment(estadoPedido);
         createOBR1Segment(idPedido, codigo, exame);
         return _ormMessage;
+    }
+
+    public ORU_R01 BuildRelatorio(String name, String numProcesso, String adress, int idPedido, String exame, String codigo, String estadoPedido) throws HL7Exception, IOException {
+        String currentDateTimeString = getCurrentTimeStamp();
+        _oruMessage = new ORU_R01();
+        _oruMessage.initQuickstart("ORU", "001", "P");
+        createMshSegment(currentDateTimeString);
+        // createEvnSegment(currentDateTimeString);
+        createPidSegment(name, numProcesso, adress);
+        createPv1Segment();
+        createORCSegment(estadoPedido);
+        createOBR1Segment(idPedido, codigo, exame);
+        createOBX1Segmente();
+        return _oruMessage;
     }
 
     private void createMshSegment(String currentDateTimeString) throws DataTypeException {
@@ -83,6 +98,15 @@ public class MessageBuilder {
         obr.getSetIDOBR().setValue(String.valueOf(idPedido));
         obr.getUniversalServiceIdentifier().getCe1_Identifier().setValue(codigo);
         obr.getUniversalServiceIdentifier().getCe2_Text().setValue(exame);
+    }
+
+    private  void createOBX1Segmente()throws HL7Exception, IOException {
+        OBX obx = _oruMessage.getPATIENT_RESULT().getORDER_OBSERVATION().getOBSERVATION().getOBX();
+        obx.getSetIDOBX().setValue("1");
+        obx.getObservationIdentifier().getCe1_Identifier().setValue("M1-23");
+        obx.getObservationIdentifier().getText().setValue("Status in immunization series");
+        obx.getObservationIdentifier().getNameOfCodingSystem().setValue("LN");
+        obx.getObservationResultStatus().setValue("F");
     }
 
     private String getCurrentTimeStamp() {

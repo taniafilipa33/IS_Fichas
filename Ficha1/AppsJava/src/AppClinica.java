@@ -123,6 +123,17 @@ public class AppClinica {
                         + " set estado = \""+estado+"\" where idPedido =" + id + " ;";
                 st.executeUpdate(s);
                 System.out.println("O exame com o id " + id + " foi aceite!");
+
+                String encoding = "UTF-8";
+                byte[] encoded = Files.readAllBytes(Paths.get("FSHospital"+id+".txt"));
+                String mensagem = new String(encoded, encoding);
+
+                String response = mensagem.replaceAll("NW", "OK");
+                System.out.println(response);
+                FileWriter writer = new FileWriter("FSHospital"+id+".txt");
+                writer.write(response);
+                writer.flush();
+
             } else if (opcao == 4) {
                 System.out.println("Insira o id do pedido que pretende registar o relatório: ");
                 int id = new Scanner(System.in).nextInt();
