@@ -118,6 +118,10 @@ public class AppHospital {
 
                 String query = "INSERT IGNORE INTO Pedido (mensagem, estado, data, idConsulta,relatorio, codigoExame, descExame) VALUES(\""+ mensagem +"\",\""+estado+"\", (select CURDATE()),"+ idConsulta +",null,\""+codigo+"\","+"\""+exame+"\")";
                 st.executeUpdate(query);
+
+                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, idPedido) VALUES(\""+ estado +"\",\"" + mensagem +"\"," + (idPedido+1)+" )";
+                st.executeUpdate(query2);
+
                 System.out.println("O seu pedido foi inserido!");
                 writeMessageToFile(pipeParser, ormMessage, "FSHospital"+(idPedido+1)+".txt");
                 }
@@ -166,6 +170,11 @@ public class AppHospital {
                 ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,id,exame,codigo, "CA" );
                 writeMessageToFile(pipeParser, ormMessage, "FSHospital"+id+".txt");
                 System.out.println("O pedido com o id " + id + "foi cancelado!");
+
+                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, idPedido) VALUES(\""+ estado +"\",\"" + ormMessage +"\"," + id+" )";
+                st.executeUpdate(query2);
+
+
             } else if (opcao == 4) {
                 int id, idConsulta;
                 String mensagem;

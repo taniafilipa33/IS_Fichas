@@ -107,32 +107,47 @@ public class AppClinica {
                 String mensagem = new String(encoded, encoding);
 
                 String response = mensagem.replaceAll("NW", "CA");
-                System.out.println(response);
                 FileWriter writer = new FileWriter("FSHospital"+id+".txt");
                 writer.write(response);
                 writer.flush();
+
+                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\""+ estado +"\",\"" + response +"\"," + id+" )";
+                st.executeUpdate(query2);
 
             } else if (opcao == 3) {
                 System.out.println("Insira o id do pedido que pretende aceitar: ");
                 int id = new Scanner(System.in).nextInt();
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                String estado = "Aceite ";
-                estado += timestamp;
-                String s;
-                s = "update Pedido"
-                        + " set estado = \""+estado+"\" where idPedido =" + id + " ;";
-                st.executeUpdate(s);
-                System.out.println("O exame com o id " + id + " foi aceite!");
+                String estadoP = "";
+                String query = "select estado from Pedido where idPedido = "+id+" ;";
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+                    estadoP = (rs.getString("estado"));
+                }
+                if (estadoP.contains("Cancelado")){
+                    System.out.println("O pedido não pode ser aceite porque foi cancelado!");
+                }
+                else {
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    String estado = "Aceite ";
+                    estado += timestamp;
+                    String s;
+                    s = "update Pedido"
+                            + " set estado = \""+estado+"\" where idPedido =" + id + " ;";
+                    st.executeUpdate(s);
+                    System.out.println("O exame com o id " + id + " foi aceite!");
 
-                String encoding = "UTF-8";
-                byte[] encoded = Files.readAllBytes(Paths.get("FSHospital"+id+".txt"));
-                String mensagem = new String(encoded, encoding);
+                    String encoding = "UTF-8";
+                    byte[] encoded = Files.readAllBytes(Paths.get("FSHospital"+id+".txt"));
+                    String mensagem = new String(encoded, encoding);
 
-                String response = mensagem.replaceAll("NW", "OK");
-                System.out.println(response);
-                FileWriter writer = new FileWriter("FSHospital"+id+".txt");
-                writer.write(response);
-                writer.flush();
+                    String response = mensagem.replaceAll("NW", "OK");
+                    FileWriter writer = new FileWriter("FSHospital" + id + ".txt");
+                    writer.write(response);
+                    writer.flush();
+
+                    String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + response + "\"," + id + " )";
+                    st.executeUpdate(query2);
+                }
 
             } else if (opcao == 4) {
                 System.out.println("Insira o id do pedido que pretende registar o relatório: ");

@@ -1,5 +1,1 @@
-MSH|^~&|AppHospital|Hospital|AppClinica|Clinica|20210319143910||ORM^001^ORM_O01|123420210319143910|P|2.4
-PID|||123||^Joseph Joestar||||||America
-PV1||O
-ORC|OK||||||||20210319143910
-OBR|1|||M10405^TORAX, UMA INCIDENCIA
+MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210324094851||ORM^001^ORM_O01|123420210324094851|P|2.4PID|||123||^Joseph Joestar||||||AmericaPV1||OORC|OK||||||||20210324094851OBR|1|||M123^exame

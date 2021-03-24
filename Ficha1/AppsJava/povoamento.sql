@@ -1,7 +1,7 @@
 use clinica;
 
 INSERT into Pedido (idPedido, mensagem, data, estado, relatorio) values(1,"MSH|^~\&|AIDA|AIDA|PACS|PACS|201504051157||ORM^O01|A2015040511    5751000002533|P|2.5|||AL|    PID|||50626||CONCEICAO    SERRANO    SEQUEIRA^MARIA^^||19411012|F||||||||||28006303|    PV1||I|INT||||||||||||||||15002727|        ORC|NW|4727374|4727374||||||20150405111053|    OBR|01|4727374|4727374|M10405^TORAX,    UMA    INCIDENCIA|||||||||||^^^|||CR|RXE||||||30||^^^20150405115723^^    0||||||",'2021-03-04 16:35:00','Pendente 2021-03-04 16:35:00', null);
-
+select * from Pedido;
 
 ALTER TABLE ProfissionalSaude
 MODIFY COLUMN idProfissionalSaude int auto_increment;
@@ -33,6 +33,7 @@ drop table Pedido;
 
 use hospital;
 select * from Paciente;
-select * from Pedido;
+select * from Pedido where idPedido = 1;
+select * from RegistoHistorico;
 INSERT INTO Consulta (descricao, idPaciente) Values ("Oftalmologia", 1);
 INSERT INTO Paciente (nome, dataNascimento, numProcesso, morada, telefone) Values ("Joseph Joestar", '2020-02-01', 123, "America", 1234567);
