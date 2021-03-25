@@ -2,6 +2,7 @@ import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.HapiContext;
 import ca.uhn.hl7v2.model.v24.message.ORM_O01;
+import ca.uhn.hl7v2.model.v24.message.ORU_R01;
 import ca.uhn.hl7v2.parser.Parser;
 
 import java.io.*;
@@ -46,8 +47,36 @@ public class AppClinica {
         }
     }
 
+    private static void writeMessageToFile(Parser parser, ORU_R01 adtMessage, String outputFilename)
+            throws IOException, FileNotFoundException, HL7Exception {
+        OutputStream outputStream = null;
+        try {
 
-    public static int nbyn() throws SQLException, IOException {
+            // Remember that the file may not show special delimiter characters when using
+            // plain text editor
+            File file = new File(outputFilename);
+
+            // quick check to create the file before writing if it does not exist already
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            System.out.println("Serializing message to file...");
+            outputStream = new FileOutputStream(file);
+            outputStream.write(parser.encode(adtMessage).getBytes());
+            outputStream.flush();
+
+            System.out.printf("Message serialized to file '%s' successfully", file);
+            System.out.println("\n");
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
+
+
+    public static int nbyn() throws SQLException, IOException, HL7Exception {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
@@ -102,12 +131,15 @@ public class AppClinica {
 
                 st.executeUpdate(s);
                 System.out.println("O exame com o id " + id + " foi cancelado!");
-                String encoding = "UTF-8";
-                byte[] encoded = Files.readAllBytes(Paths.get("FSHospital"+id+".txt"));
-                String mensagem = new String(encoded, encoding);
 
+                String query = "select mensagem from Pedido where idPedido = "+id+";";
+                ResultSet rs = st.executeQuery(query);
+                String mensagem = "";
+                while (rs.next()) {
+                    mensagem = rs.getString("mensagem");
+                }
                 String response = mensagem.replaceAll("NW", "CA");
-                FileWriter writer = new FileWriter("FSHospital"+id+".txt");
+                FileWriter writer = new FileWriter("FSClinica"+id+".txt");
                 writer.write(response);
                 writer.flush();
 
@@ -136,12 +168,15 @@ public class AppClinica {
                     st.executeUpdate(s);
                     System.out.println("O exame com o id " + id + " foi aceite!");
 
-                    String encoding = "UTF-8";
-                    byte[] encoded = Files.readAllBytes(Paths.get("FSHospital"+id+".txt"));
-                    String mensagem = new String(encoded, encoding);
+                    String queryS = "select mensagem from Pedido where idPedido = "+id+";";
+                    ResultSet rsS = st.executeQuery(queryS);
+                    String mensagem = "";
+                    while (rsS.next()) {
+                        mensagem = rsS.getString("mensagem");
+                    }
 
                     String response = mensagem.replaceAll("NW", "OK");
-                    FileWriter writer = new FileWriter("FSHospital" + id + ".txt");
+                    FileWriter writer = new FileWriter("FSClinicaAceite" + id + ".txt");
                     writer.write(response);
                     writer.flush();
 
@@ -150,13 +185,49 @@ public class AppClinica {
                 }
 
             } else if (opcao == 4) {
-                System.out.println("Insira o id do pedido que pretende registar o relatório: ");
+                Parser pipeParser = context.getPipeParser();
+                System.out.println("Insira o id do exame que pretende registar o relatório: ");
                 int id = new Scanner(System.in).nextInt();
+
+
+                String queryS = "select * from Exame where idExame = "+id+";";
+                ResultSet rsS = st.executeQuery(queryS);
+                int idPedido = 0;
+                String medico = "";
+                int idPaciente = 0;
+                String codigo = "";
+                String exame = "";
+                while (rsS.next()) {
+                    idPedido = rsS.getInt("Pedido_idPedido");
+                    medico = rsS.getString("medico");
+                    idPaciente = rsS.getInt("Paciente_idPaciente");
+                    codigo = rsS.getString("codigo_ato");
+                    exame = rsS.getString("ato");
+                }
+
+                String query1 = "select * from Paciente where idPaciente = "+idPaciente+";";
+                ResultSet rs = st.executeQuery(query1);
+                String nome = "";
+                int numProcesso = 0;
+                String morada = "";
+                while (rs.next()) {
+                    nome = rs.getString("nome");
+                    numProcesso = rs.getInt("numProcesso");
+                    morada = rs.getString("morada");
+
+                }
+
                 System.out.println("Escreva o relatório: ");
                 String relatorio = new Scanner(System.in).nextLine();
                 String query;
-                query = "update Pedido set relatorio = \"" + relatorio + "\" where idPedido = " + id + ";";
+                query = "update Pedido set relatorio = \"" + relatorio + "\" where idPedido = " + idPedido + ";";
                 st.executeUpdate(query);
+
+                ORU_R01 oru_r01 = (ORU_R01) AdtMessageFactory.createMessage("R01",nome, String.valueOf(numProcesso), morada,idPedido,exame,codigo, "NW",1,exame, relatorio, medico );
+                String mensagem = pipeParser.encode(oru_r01);
+                writeMessageToFile(pipeParser, oru_r01, "FSClinica"+idPedido+".txt");
+
+
                 System.out.println("O relatório foi escrito com sucesso");
             }
         }
@@ -168,7 +239,7 @@ public class AppClinica {
         // int res = run();
         try {
             int nbyn = nbyn();
-        } catch (SQLException | IOException throwables) {
+        } catch (SQLException | IOException | HL7Exception throwables) {
             throwables.printStackTrace();
         }
     }

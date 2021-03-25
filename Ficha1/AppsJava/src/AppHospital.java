@@ -107,7 +107,7 @@ public class AppHospital {
                 String codigo = new Scanner(System.in).nextLine();
                 System.out.println("Descrição do exame a realizar:");
                 String exame = new Scanner(System.in).nextLine();
-                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,idPedido+1,exame,codigo, "NW" );
+                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,idPedido+1,exame,codigo, "NW",0 );
                 String mensagem = pipeParser.encode(ormMessage);
                 System.out.println("Insira o id da consulta:");
                 int idConsulta = new Scanner(System.in).nextInt();
@@ -167,8 +167,8 @@ public class AppHospital {
                     numProcesso = rs3.getInt("numProcesso");
 
                 }
-                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,id,exame,codigo, "CA" );
-                writeMessageToFile(pipeParser, ormMessage, "FSHospital"+id+".txt");
+                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,id,exame,codigo, "CA",0 );
+                writeMessageToFile(pipeParser, ormMessage, "FSHospitalCA"+id+".txt");
                 System.out.println("O pedido com o id " + id + "foi cancelado!");
 
                 String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, idPedido) VALUES(\""+ estado +"\",\"" + ormMessage +"\"," + id+" )";
