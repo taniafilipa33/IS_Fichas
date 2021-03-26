@@ -1,14 +1,14 @@
 import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.HapiContext;
-import ca.uhn.hl7v2.model.v24.message.ADT_A01;
 import ca.uhn.hl7v2.model.v24.message.ORM_O01;
 import ca.uhn.hl7v2.parser.Parser;
 
-import java.awt.*;
 import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
+
+
 
 public class AppHospital {
     private static final String host = "localhost";
@@ -31,18 +31,20 @@ public class AppHospital {
                 file.createNewFile();
             }
 
-            System.out.println("Serializing message to file...");
             outputStream = new FileOutputStream(file);
             outputStream.write(parser.encode(adtMessage).getBytes());
             outputStream.flush();
 
-            System.out.printf("Message serialized to file '%s' successfully", file);
-            System.out.println("\n");
         } finally {
             if (outputStream != null) {
                 outputStream.close();
             }
         }
+    }
+
+    public static void clearScreen() {
+
+        System.out.print("\n\n\n\n\n\n\n\n\n\n");
     }
 
     public static int nbyn() throws SQLException, IOException, HL7Exception {
@@ -61,6 +63,7 @@ public class AppHospital {
         }
         Statement st = c.createStatement();
         int opcao = 0;
+        clearScreen();
         while (opcao != 6) {
             System.out.println("Insira 1 para visualizar o histórico de consultas \n" +
                     "Insira 2 para efetuar pedido \n" +
@@ -202,6 +205,7 @@ public class AppHospital {
                 query = "select * from Pedido where idPedido = " + id + ";";
                 ResultSet rs = st.executeQuery(query);
                 String relatorio;
+                // NÂO SABEMOS SE É SUPOSTO IR BUSCAR AO FICHEIRO OU À BASE DE DADOS - DEPENDE DO MIRTH
                 while(rs.next()){
                     relatorio = rs.getString("relatorio");
                     System.out.println("Relatório: " + relatorio);

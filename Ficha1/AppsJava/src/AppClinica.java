@@ -6,9 +6,6 @@ import ca.uhn.hl7v2.model.v24.message.ORU_R01;
 import ca.uhn.hl7v2.parser.Parser;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -19,33 +16,6 @@ public class AppClinica {
     private static final String database = "clinica";
     private static HapiContext context = new DefaultHapiContext();
 
-    private static void writeMessageToFile(Parser parser, ORM_O01 adtMessage, String outputFilename)
-            throws IOException, FileNotFoundException, HL7Exception {
-        OutputStream outputStream = null;
-        try {
-
-            // Remember that the file may not show special delimiter characters when using
-            // plain text editor
-            File file = new File(outputFilename);
-
-            // quick check to create the file before writing if it does not exist already
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            System.out.println("Serializing message to file...");
-            outputStream = new FileOutputStream(file);
-            outputStream.write(parser.encode(adtMessage).getBytes());
-            outputStream.flush();
-
-            System.out.printf("Message serialized to file '%s' successfully", file);
-            System.out.println("\n");
-        } finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
-        }
-    }
 
     private static void writeMessageToFile(Parser parser, ORU_R01 adtMessage, String outputFilename)
             throws IOException, FileNotFoundException, HL7Exception {
@@ -75,6 +45,10 @@ public class AppClinica {
         }
     }
 
+    public static void clearScreen() {
+        System.out.print("\n\n\n\n\n\n\n\n\n\n");
+    }
+
 
     public static int nbyn() throws SQLException, IOException, HL7Exception {
         try {
@@ -91,6 +65,7 @@ public class AppClinica {
         }
         Statement st = c.createStatement();
         int opcao = 0;
+        clearScreen();
         while (opcao!=5) {
             System.out.println("Insira 1 para ver estado dos pedidos \n" +
                     "Insira 2 para cancelar pedidos \n" +
@@ -139,7 +114,8 @@ public class AppClinica {
                     mensagem = rs.getString("mensagem");
                 }
                 String response = mensagem.replaceAll("NW", "CA");
-                FileWriter writer = new FileWriter("FSClinica"+id+".txt");
+                File myObj = new File("FSClinicaCA"+id+".txt");
+                FileWriter writer = new FileWriter(myObj);
                 writer.write(response);
                 writer.flush();
 
@@ -176,7 +152,8 @@ public class AppClinica {
                     }
 
                     String response = mensagem.replaceAll("NW", "OK");
-                    FileWriter writer = new FileWriter("FSClinicaAceite" + id + ".txt");
+                    File myObj = new File("FSClinicaAceite" + id + ".txt");
+                    FileWriter writer = new FileWriter(myObj);
                     writer.write(response);
                     writer.flush();
 
@@ -223,10 +200,21 @@ public class AppClinica {
                 query = "update Pedido set relatorio = \"" + relatorio + "\" where idPedido = " + idPedido + ";";
                 st.executeUpdate(query);
 
+                String query3 = "select * from Pedido where idPedido = "+idPedido+";";
+                ResultSet rs3 = st.executeQuery(query3);
+                String estado = "";
+                while (rs3.next()) {
+                    estado = rs3.getString("estado");
+
+                }
+
                 ORU_R01 oru_r01 = (ORU_R01) AdtMessageFactory.createMessage("R01",nome, String.valueOf(numProcesso), morada,idPedido,exame,codigo, "NW",1,exame, relatorio, medico );
                 String mensagem = pipeParser.encode(oru_r01);
-                writeMessageToFile(pipeParser, oru_r01, "FSClinica"+idPedido+".txt");
+                writeMessageToFile(pipeParser, oru_r01, "FSClinicaRelatorio"+idPedido+".txt");
 
+
+                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + mensagem + "\"," + idPedido + " )";
+                st.executeUpdate(query2);
 
                 System.out.println("O relatório foi escrito com sucesso");
             }

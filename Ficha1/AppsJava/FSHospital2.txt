@@ -1,1 +1,1 @@
-MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210325195833||ORU^R01^ORU_R01|123420210325195833|P|2.4PID|||123||^Joseph Joestar||||||AmericaPV1||OORC|NW||||||||20210325195833OBR|2|||M123^Exame ao ToraxOBX|1|TX|||Exame ao ToraxOBX|2|TX|||Exame correu como esperado, tá tudo bem!OBX|3|TX|||Relatório validado por: Joaquim Alberto
+MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210326094322||ORM^001^ORM_O01|123420210326094322|P|2.4PID|||123||^Joseph Joestar||||||AmericaPV1||OORC|NW||||||||20210326094322OBR|2|||M123^raio X
