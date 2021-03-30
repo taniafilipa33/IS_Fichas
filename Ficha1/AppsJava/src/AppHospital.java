@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class AppHospital {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "password";
+    private static final String password = "root";
     private static final String database = "hospital";
     private static HapiContext context = new DefaultHapiContext();
 
@@ -137,9 +137,7 @@ public class AppHospital {
                 String estado = "Cancelado ";
                 estado += timestamp;
                 String s;
-                s = "update Pedido"
-                        + " set estado = \""+ estado +"\" where idPedido =" + id + ";";
-                st.executeUpdate(s);
+
 
                 String select = "SELECT * from Pedido where idPedido =" + id +";";
                 ResultSet rs = st.executeQuery(select);
@@ -168,16 +166,15 @@ public class AppHospital {
                     nome = rs3.getString("nome");
                     morada = rs3.getString("morada");
                     numProcesso = rs3.getInt("numProcesso");
-
                 }
                 ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,id,exame,codigo, "CA",0 );
                 writeMessageToFile(pipeParser, ormMessage, "FSHospitalCA"+id+".txt");
-                System.out.println("O pedido com o id " + id + "foi cancelado!");
-
+                System.out.println("O pedido com o id " + id + " foi cancelado!");
+                s = "update Pedido"
+                        + " set estado = \""+ estado +"\", mensagem = '"+ pipeParser.encode(ormMessage) +"' where idPedido =" + id + ";";
+                st.executeUpdate(s);
                 String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, idPedido) VALUES(\""+ estado +"\",\"" + ormMessage +"\"," + id+" )";
                 st.executeUpdate(query2);
-
-
             } else if (opcao == 4) {
                 int id, idConsulta;
                 String mensagem;

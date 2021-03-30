@@ -1,18 +1,27 @@
 import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.HapiContext;
+import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.v24.datatype.TS;
+import ca.uhn.hl7v2.model.v24.datatype.TSComponentOne;
 import ca.uhn.hl7v2.model.v24.message.ORM_O01;
 import ca.uhn.hl7v2.model.v24.message.ORU_R01;
 import ca.uhn.hl7v2.parser.Parser;
+import ca.uhn.hl7v2.parser.PipeParser;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class AppClinica {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "password";
+    private static final String password = "root";
     private static final String database = "clinica";
     private static HapiContext context = new DefaultHapiContext();
 
@@ -49,6 +58,56 @@ public class AppClinica {
         System.out.print("\n\n\n\n\n\n\n\n\n\n");
     }
 
+    public static void readFiles(Connection c) {
+        File Folder = new File("recebidoHospital");
+        File files[] = Folder.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            byte[] encoded = new byte[0];
+            String message = "";
+            try {
+                encoded = Files.readAllBytes(files[i].getAbsoluteFile().toPath());
+                message = new String(encoded, "UTF-8");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            Statement st = null;
+            try {
+                st = c.createStatement();
+            }
+            catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            PipeParser pipeParser = new PipeParser();
+            try {
+                //parse the message string into a Message object
+                Message hl7 = pipeParser.parse(message);
+
+                //if it is an ACK message (as we know it is),  cast it to an
+                // ACK object so that it is easier to work with, and change a value
+                if (hl7 instanceof ORM_O01) {
+                    ORM_O01 orm = (ORM_O01) hl7;
+                    java.util.Date data = orm.getMSH().getDateTimeOfMessage().getTimeOfAnEvent().getValueAsDate();
+                    String pattern = "yyyy-MM-dd hh:mm:ss";
+                    SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+                    String mysqlDateString = formatter.format(data);
+                    String codigo = orm.getORDER().getORDER_DETAIL().getOBR().getUniversalServiceIdentifier().getCe1_Identifier().toString();
+                    String exame = orm.getORDER().getORDER_DETAIL().getOBR().getUniversalServiceIdentifier().getCe2_Text().toString();
+                    String estado = "Pendente " + mysqlDateString;
+                    String query = "INSERT IGNORE INTO Pedido (mensagem, data, estado, relatorio, codigoExame, descExame)" +
+                                   " VALUES (\"" + message + "\", '" + mysqlDateString + "', '" + estado + "', " + "null, '"+ codigo +"'," +
+                                   " '"+ exame +"')";
+                    //System.out.println(query);
+                    st.executeUpdate(query);
+                }
+                /*String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + response + "\"," + id + " )";
+                st.executeUpdate(query2);*/
+            }
+            catch (SQLException | HL7Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static int nbyn() throws SQLException, IOException, HL7Exception {
         try {
@@ -67,6 +126,7 @@ public class AppClinica {
         int opcao = 0;
         clearScreen();
         while (opcao!=5) {
+            readFiles(c);
             System.out.println("Insira 1 para ver estado dos pedidos \n" +
                     "Insira 2 para cancelar pedidos \n" +
                     "Insira 3 para aceitar pedidos \n" +
@@ -101,11 +161,6 @@ public class AppClinica {
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 String estado = "Cancelado ";
                 estado += timestamp;
-                s = "update Pedido"
-                        + " set estado = \""+estado+"\" where idPedido =" + id + " ;";
-
-                st.executeUpdate(s);
-                System.out.println("O exame com o id " + id + " foi cancelado!");
 
                 String query = "select mensagem from Pedido where idPedido = "+id+";";
                 ResultSet rs = st.executeQuery(query);
@@ -118,8 +173,12 @@ public class AppClinica {
                 FileWriter writer = new FileWriter(myObj);
                 writer.write(response);
                 writer.flush();
+                s = "update Pedido"
+                        + " set estado = \""+estado+"\", mensagem = '"+ response +"' where idPedido =" + id + " ;";
+                st.executeUpdate(s);
+                System.out.println("O exame com o id " + id + " foi cancelado!");
 
-                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\""+ estado +"\",\"" + response +"\"," + id+" )";
+                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\""+ estado +"\",'" + response +"'," + id+" )";
                 st.executeUpdate(query2);
 
             } else if (opcao == 3) {
@@ -139,10 +198,6 @@ public class AppClinica {
                     String estado = "Aceite ";
                     estado += timestamp;
                     String s;
-                    s = "update Pedido"
-                            + " set estado = \""+estado+"\" where idPedido =" + id + " ;";
-                    st.executeUpdate(s);
-                    System.out.println("O exame com o id " + id + " foi aceite!");
 
                     String queryS = "select mensagem from Pedido where idPedido = "+id+";";
                     ResultSet rsS = st.executeQuery(queryS);
@@ -156,6 +211,10 @@ public class AppClinica {
                     FileWriter writer = new FileWriter(myObj);
                     writer.write(response);
                     writer.flush();
+                    s = "update Pedido"
+                            + " set estado = \""+estado+"\", message = '"+ response +"' where idPedido =" + id + " ;";
+                    st.executeUpdate(s);
+                    System.out.println("O exame com o id " + id + " foi aceite!");
 
                     String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + response + "\"," + id + " )";
                     st.executeUpdate(query2);
