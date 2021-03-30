@@ -212,7 +212,7 @@ public class AppClinica {
                     writer.write(response);
                     writer.flush();
                     s = "update Pedido"
-                            + " set estado = \""+estado+"\", message = '"+ response +"' where idPedido =" + id + " ;";
+                            + " set estado = \""+estado+"\", mensagem = '"+ response +"' where idPedido =" + id + " ;";
                     st.executeUpdate(s);
                     System.out.println("O exame com o id " + id + " foi aceite!");
 
@@ -250,7 +250,6 @@ public class AppClinica {
                     nome = rs.getString("nome");
                     numProcesso = rs.getInt("numProcesso");
                     morada = rs.getString("morada");
-
                 }
 
                 System.out.println("Escreva o relatório: ");
@@ -269,7 +268,7 @@ public class AppClinica {
 
                 ORU_R01 oru_r01 = (ORU_R01) AdtMessageFactory.createMessage("R01",nome, String.valueOf(numProcesso), morada,idPedido,exame,codigo, "NW",1,exame, relatorio, medico );
                 String mensagem = pipeParser.encode(oru_r01);
-                writeMessageToFile(pipeParser, oru_r01, "FSClinicaRelatorio"+idPedido+".txt");
+                writeMessageToFile(pipeParser, oru_r01, "relatoriosC\\FSClinicaRelatorio"+idPedido+".txt");
 
 
                 String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + mensagem + "\"," + idPedido + " )";

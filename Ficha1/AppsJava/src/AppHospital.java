@@ -1,11 +1,16 @@
 import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.HapiContext;
+import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v24.message.ORM_O01;
+import ca.uhn.hl7v2.model.v24.message.ORU_R01;
 import ca.uhn.hl7v2.parser.Parser;
+import ca.uhn.hl7v2.parser.PipeParser;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 
@@ -47,6 +52,63 @@ public class AppHospital {
         System.out.print("\n\n\n\n\n\n\n\n\n\n");
     }
 
+    public static void readFiles(Connection c) {
+        File Folder = new File("relatoriosH");
+        File files[] = Folder.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            byte[] encoded = new byte[0];
+            String message = "";
+            try {
+                encoded = Files.readAllBytes(files[i].getAbsoluteFile().toPath());
+                message = new String(encoded, "UTF-8");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            Statement st = null;
+            try {
+                st = c.createStatement();
+            }
+            catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            PipeParser pipeParser = new PipeParser();
+            try {
+                //parse the message string into a Message object
+                Message hl7 = pipeParser.parse(message);
+                String query = "select idConsulta from Pedido where mensagem = '"+ message +"';";
+                ResultSet rs = st.executeQuery(query);
+                int idConsulta = 0;
+                while (rs.next()) {
+                    idConsulta = rs.getInt("idConsulta");
+                }
+                //if it is an ACK message (as we know it is),  cast it to an
+                // ACK object so that it is easier to work with, and change a value
+                if (hl7 instanceof ORU_R01) {
+                    ORU_R01 oru = (ORU_R01) hl7;
+                    java.util.Date data = oru.getMSH().getDateTimeOfMessage().getTimeOfAnEvent().getValueAsDate();
+                    String pattern = "yyyy-MM-dd hh:mm:ss";
+                    SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+                    String mysqlDateString = formatter.format(data);
+                    String codigo = oru.getPATIENT_RESULT().getORDER_OBSERVATION().getOBR().getUniversalServiceIdentifier().getCe1_Identifier().toString();
+                    String exame = oru.getPATIENT_RESULT().getORDER_OBSERVATION().getOBR().getUniversalServiceIdentifier().getCe2_Text().toString();
+                    String estado = "Aceite " + mysqlDateString;
+                    String relatorio = oru.getPATIENT_RESULT().getORDER_OBSERVATION().getOBSERVATION(1).getOBX().getObservationValue(0).encode();
+                    String query1 = "INSERT IGNORE INTO Pedido (mensagem, estado, data, idConsulta, relatorio, codigoExame, descExame)" +
+                                   " VALUES (\"" + message + "\", '" + estado + "', '" + mysqlDateString + "', "+ idConsulta + ", '" + relatorio +
+                                   "', '"+ codigo +"'," + " '"+ exame +"')";
+                    //System.out.println(relatorio);
+                    st.executeUpdate(query1);
+                }
+                /*String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + response + "\"," + id + " )";
+                st.executeUpdate(query2);*/
+            }
+            catch (SQLException | HL7Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static int nbyn() throws SQLException, IOException, HL7Exception {
 
         try {
@@ -65,6 +127,7 @@ public class AppHospital {
         int opcao = 0;
         clearScreen();
         while (opcao != 6) {
+            readFiles(c);
             System.out.println("Insira 1 para visualizar o histórico de consultas \n" +
                     "Insira 2 para efetuar pedido \n" +
                     "Insira 3 para cancelar pedidos \n" +
@@ -201,12 +264,12 @@ public class AppHospital {
                 String query;
                 query = "select * from Pedido where idPedido = " + id + ";";
                 ResultSet rs = st.executeQuery(query);
-                String relatorio;
+                String relatorio = "";
                 // NÂO SABEMOS SE É SUPOSTO IR BUSCAR AO FICHEIRO OU À BASE DE DADOS - DEPENDE DO MIRTH
                 while(rs.next()){
                     relatorio = rs.getString("relatorio");
-                    System.out.println("Relatório: " + relatorio);
                 }
+                System.out.println("Relatório: " + relatorio);
             }
         }
         return 0;
