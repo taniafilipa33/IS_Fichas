@@ -18,7 +18,7 @@ import java.util.Scanner;
 public class AppHospital {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "root";
+    private static final String password = "password";
     private static final String database = "hospital";
     private static HapiContext context = new DefaultHapiContext();
 
@@ -76,15 +76,16 @@ public class AppHospital {
             try {
                 //parse the message string into a Message object
                 Message hl7 = pipeParser.parse(message);
-                String query = "select idConsulta from Pedido where mensagem = '"+ message +"';";
-                ResultSet rs = st.executeQuery(query);
-                int idConsulta = 0;
-                while (rs.next()) {
-                    idConsulta = rs.getInt("idConsulta");
-                }
+
                 //if it is an ACK message (as we know it is),  cast it to an
                 // ACK object so that it is easier to work with, and change a value
                 if (hl7 instanceof ORU_R01) {
+                    String query = "select idConsulta from Pedido where mensagem = '"+ message +"';";
+                    ResultSet rs = st.executeQuery(query);
+                    int idConsulta = 0;
+                    while (rs.next()) {
+                        idConsulta = rs.getInt("idConsulta");
+                    }
                     ORU_R01 oru = (ORU_R01) hl7;
                     java.util.Date data = oru.getMSH().getDateTimeOfMessage().getTimeOfAnEvent().getValueAsDate();
                     String pattern = "yyyy-MM-dd hh:mm:ss";
@@ -102,6 +103,33 @@ public class AppHospital {
                 }
                 /*String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + response + "\"," + id + " )";
                 st.executeUpdate(query2);*/
+
+                if (hl7 instanceof ORM_O01) {
+                    ORM_O01 orm = (ORM_O01) hl7;
+                    java.util.Date data = orm.getMSH().getDateTimeOfMessage().getTimeOfAnEvent().getValueAsDate();
+                    String pattern = "yyyy-MM-dd hh:mm:ss";
+                    SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+                    String mysqlDateString = formatter.format(data);
+                    String estado = orm.getORDER().getORC().getOrderControl().encode();
+                    if(estado.equals("CA")){
+                        estado = "Cancelado " + mysqlDateString;
+                    }
+                    else if(estado.equals("OK")){
+                        estado = "Aceite " + mysqlDateString;
+                    }
+                    String response = message.replaceAll("CA", "NW");
+                    String query = "select idPedido from Pedido where mensagem = '"+ response +"';";
+                    ResultSet rs = st.executeQuery(query);
+                    int idPedido = 0;
+                    while (rs.next()) {
+                        idPedido = rs.getInt("idPedido");
+                    }
+
+                    String s;
+                    s = "update Pedido"
+                            + " set estado = \""+ estado +"\", mensagem = '"+ message +"' where idPedido =" + idPedido + ";";
+                    st.executeUpdate(s);
+                }
             }
             catch (SQLException | HL7Exception e) {
                 e.printStackTrace();

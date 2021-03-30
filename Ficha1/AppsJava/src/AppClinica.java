@@ -21,7 +21,7 @@ import java.util.Scanner;
 public class AppClinica {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "root";
+    private static final String password = "password";
     private static final String database = "clinica";
     private static HapiContext context = new DefaultHapiContext();
 
@@ -93,15 +93,28 @@ public class AppClinica {
                     String mysqlDateString = formatter.format(data);
                     String codigo = orm.getORDER().getORDER_DETAIL().getOBR().getUniversalServiceIdentifier().getCe1_Identifier().toString();
                     String exame = orm.getORDER().getORDER_DETAIL().getOBR().getUniversalServiceIdentifier().getCe2_Text().toString();
-                    String estado = "Pendente " + mysqlDateString;
-                    String query = "INSERT IGNORE INTO Pedido (mensagem, data, estado, relatorio, codigoExame, descExame)" +
-                                   " VALUES (\"" + message + "\", '" + mysqlDateString + "', '" + estado + "', " + "null, '"+ codigo +"'," +
-                                   " '"+ exame +"')";
-                    //System.out.println(query);
-                    st.executeUpdate(query);
+                    String estado = orm.getORDER().getORC().getOrderControl().encode();
+                    if(estado.equals("NW")) {
+                        estado = "Pendente " + mysqlDateString;
+                        String query = "INSERT IGNORE INTO Pedido (mensagem, data, estado, relatorio, codigoExame, descExame)" +
+                                " VALUES (\"" + message + "\", '" + mysqlDateString + "', '" + estado + "', " + "null, '" + codigo + "'," +
+                                " '" + exame + "')";
+                        //System.out.println(query);
+                        st.executeUpdate(query);
+                    }
+                    else if(estado.equals("CA")){
+                        String query = "select idPedido from Pedido where mensagem = '"+ message +"';";
+                        ResultSet rs = st.executeQuery(query);
+                        int idPedido = 0;
+                        while (rs.next()) {
+                            idPedido = rs.getInt("idConsulta");
+                        }
+                        String s;
+                        s = "update Pedido"
+                                + " set estado = \""+ estado +"\", mensagem = '"+ message +"' where idPedido =" + idPedido + ";";
+                        st.executeUpdate(s);
+                    }
                 }
-                /*String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + response + "\"," + id + " )";
-                st.executeUpdate(query2);*/
             }
             catch (SQLException | HL7Exception e) {
                 e.printStackTrace();
@@ -169,7 +182,7 @@ public class AppClinica {
                     mensagem = rs.getString("mensagem");
                 }
                 String response = mensagem.replaceAll("NW", "CA");
-                File myObj = new File("FSClinicaCA"+id+".txt");
+                File myObj = new File("relatoriosC\\FSClinicaCA"+id+".txt");
                 FileWriter writer = new FileWriter(myObj);
                 writer.write(response);
                 writer.flush();
@@ -207,7 +220,7 @@ public class AppClinica {
                     }
 
                     String response = mensagem.replaceAll("NW", "OK");
-                    File myObj = new File("FSClinicaAceite" + id + ".txt");
+                    File myObj = new File("relatoriosC\\FSClinicaAceite" + id + ".txt");
                     FileWriter writer = new FileWriter(myObj);
                     writer.write(response);
                     writer.flush();
