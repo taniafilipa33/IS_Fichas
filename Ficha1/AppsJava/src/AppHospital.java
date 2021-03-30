@@ -18,7 +18,7 @@ import java.util.Scanner;
 public class AppHospital {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "password";
+    private static final String password = "root";
     private static final String database = "hospital";
     private static HapiContext context = new DefaultHapiContext();
 
@@ -134,6 +134,12 @@ public class AppHospital {
             catch (SQLException | HL7Exception e) {
                 e.printStackTrace();
             }
+            if (files[i].delete()) {
+                System.out.println("Deleted the file: " + files[i].getName());
+            }
+            else {
+                System.out.println("Failed to delete the file.");
+            }
         }
     }
 
@@ -179,7 +185,7 @@ public class AppHospital {
             else if (opcao == 2) {
                 Parser pipeParser = context.getPipeParser();
 
-                System.out.println("Insira o identificado do paciente:");
+                System.out.println("Insira o identificador do paciente:");
                 int idPaciente = new Scanner(System.in).nextInt();
                 String select1 = "SELECT * from Paciente where idPaciente = "+idPaciente;
                 ResultSet rs1 = st.executeQuery(select1);

@@ -21,7 +21,7 @@ import java.util.Scanner;
 public class AppClinica {
     private static final String host = "localhost";
     private static final String usrName = "root";
-    private static final String password = "password";
+    private static final String password = "root";
     private static final String database = "clinica";
     private static HapiContext context = new DefaultHapiContext();
 
@@ -103,13 +103,15 @@ public class AppClinica {
                         st.executeUpdate(query);
                     }
                     else if(estado.equals("CA")){
-                        String query = "select idPedido from Pedido where mensagem = '"+ message +"';";
+                        String response = message.replaceAll("CA", "NW");
+                        String query = "select idPedido from Pedido where mensagem = '"+ response +"';";
                         ResultSet rs = st.executeQuery(query);
                         int idPedido = 0;
                         while (rs.next()) {
-                            idPedido = rs.getInt("idConsulta");
+                            idPedido = rs.getInt("idPedido");
                         }
                         String s;
+                        estado = "Cancelado " + mysqlDateString;
                         s = "update Pedido"
                                 + " set estado = \""+ estado +"\", mensagem = '"+ message +"' where idPedido =" + idPedido + ";";
                         st.executeUpdate(s);
@@ -118,6 +120,11 @@ public class AppClinica {
             }
             catch (SQLException | HL7Exception e) {
                 e.printStackTrace();
+            }
+            if (files[i].delete()) {
+                System.out.println("Deleted the file: " + files[i].getName());
+            } else {
+                System.out.println("Failed to delete the file.");
             }
         }
     }
@@ -191,17 +198,22 @@ public class AppClinica {
                 st.executeUpdate(s);
                 System.out.println("O exame com o id " + id + " foi cancelado!");
 
-                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\""+ estado +"\",'" + response +"'," + id+" )";
+                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) " +
+                                "VALUES(\""+ estado +"\",'" + response +"'," + id+" )";
                 st.executeUpdate(query2);
 
             } else if (opcao == 3) {
                 System.out.println("Insira o id do pedido que pretende aceitar: ");
                 int id = new Scanner(System.in).nextInt();
                 String estadoP = "";
-                String query = "select estado from Pedido where idPedido = "+id+" ;";
+                String cod_exame = "";
+                String desc_exame = "";
+                String query = "select * from Pedido where idPedido = "+id+" ;";
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
+                    cod_exame = (rs.getString("codigoExame"));
                     estadoP = (rs.getString("estado"));
+                    desc_exame = rs.getString("descExame");
                 }
                 if (estadoP.contains("Cancelado")){
                     System.out.println("O pedido não pode ser aceite porque foi cancelado!");
@@ -229,10 +241,18 @@ public class AppClinica {
                     st.executeUpdate(s);
                     System.out.println("O exame com o id " + id + " foi aceite!");
 
+                    PipeParser pipeParser = new PipeParser();
+                    ORM_O01 orm = (ORM_O01) pipeParser.parse(mensagem);
+                    int numProcesso = Integer.parseInt(orm.getPATIENT().getPID().getPatientIdentifierList(0).getID().toString());
+                    String query3 = "INSERT IGNORE INTO Exame " +
+                                    "(codigo_ato, ato, id_externo, medico, Paciente_id_paciente, pedido_id_pedido)" +
+                                    " Values ('"+ cod_exame +"', '" + desc_exame + "', " +
+                                    "1, 'Tiago Carvalho', " + numProcesso + ", " + id +")";
+                    st.executeUpdate(query3);
+
                     String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, Pedido_idPedido) VALUES(\"" + estado + "\",\"" + response + "\"," + id + " )";
                     st.executeUpdate(query2);
                 }
-
             } else if (opcao == 4) {
                 Parser pipeParser = context.getPipeParser();
                 System.out.println("Insira o id do exame que pretende registar o relatório: ");

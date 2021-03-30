@@ -4,9 +4,9 @@ select * from Exame;
 INSERT into Pedido (idPedido, mensagem, data, estado, relatorio, codigoExame, descExame ) values(1,"MSH|^~\&|AIDA|AIDA|PACS|PACS|201504051157||ORM^O01|A2015040511    5751000002533|P|2.5|||AL|    PID|||50626||CONCEICAO    SERRANO    SEQUEIRA^MARIA^^||19411012|F||||||||||28006303|    PV1||I|INT||||||||||||||||15002727|        ORC|NW|4727374|4727374||||||20150405111053|    OBR|01|4727374|4727374|M10405^TORAX,    UMA    INCIDENCIA|||||||||||^^^|||CR|RXE||||||30||^^^20150405115723^^    0||||||",'2021-03-04 16:35:00','Pendente 2021-03-04 16:35:00', null, "M123","Exame ao torax");
 select * from Pedido;
 
-INSERT INTO Paciente (nome, dataNascimento,morada, numProcesso, telefone) Values ("Joseph Joestar", '2020-02-01', "America", 123, 1234567);
+INSERT INTO Paciente (nome, dataNascimento,morada, numProcesso, telefone) Values ("António Albertim Silva", '2020-02-01', "Rua Fernando Pessoa", 456123789, 1234567);
 
-insert into Exame (codigo_ato,ato,id_externo,medico,Paciente_idPaciente,Pedido_idPedido) values ("M123","Exame ao Torax",1,"Joaquim Alberto",1,2);
+insert into Exame (codigo_ato,ato,id_externo,medico,Paciente_idPaciente,Pedido_idPedido) values ("M123","Exame ao Torax",1,"Joaquim Alberto",1,3);
 
 
 ALTER TABLE ProfissionalSaude
