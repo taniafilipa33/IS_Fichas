@@ -55,6 +55,7 @@ public class AppClinica {
     }
 
     public static void clearScreen() {
+
         System.out.print("\n\n\n\n\n\n\n\n\n\n");
     }
 
@@ -94,6 +95,7 @@ public class AppClinica {
                     String codigo = orm.getORDER().getORDER_DETAIL().getOBR().getUniversalServiceIdentifier().getCe1_Identifier().toString();
                     String exame = orm.getORDER().getORDER_DETAIL().getOBR().getUniversalServiceIdentifier().getCe2_Text().toString();
                     String estado = orm.getORDER().getORC().getOrderControl().encode();
+                    message = message.replace("\\", "\\\\");
                     if(estado.equals("NW")) {
                         estado = "Pendente " + mysqlDateString;
                         String query = "INSERT IGNORE INTO Pedido (mensagem, data, estado, relatorio, codigoExame, descExame)" +
@@ -145,13 +147,14 @@ public class AppClinica {
         Statement st = c.createStatement();
         int opcao = 0;
         clearScreen();
-        while (opcao!=5) {
-            readFiles(c);
+        readFiles(c);
+        while (opcao!=6) {
             System.out.println("Insira 1 para ver estado dos pedidos \n" +
                     "Insira 2 para cancelar pedidos \n" +
                     "Insira 3 para aceitar pedidos \n" +
                     "Insira 4 para escrever e publicar relatório de exames \n" +
-                    "Insira 5 para sair \n");
+                    "Insira 5 para verfificar os ficheiros nas pastas \n" +
+                    "Insira 6 para sair \n");
             opcao = new Scanner(System.in).nextInt();
             if (opcao == 1) {
                 int id;
@@ -188,11 +191,14 @@ public class AppClinica {
                 while (rs.next()) {
                     mensagem = rs.getString("mensagem");
                 }
+
+                //mensagem = mensagem.replace("\\", "\\\\");
                 String response = mensagem.replaceAll("NW", "CA");
                 File myObj = new File("relatoriosC\\FSClinicaCA"+id+".txt");
                 FileWriter writer = new FileWriter(myObj);
                 writer.write(response);
                 writer.flush();
+                writer.close();
                 s = "update Pedido"
                         + " set estado = \""+estado+"\", mensagem = '"+ response +"' where idPedido =" + id + " ;";
                 st.executeUpdate(s);
@@ -230,12 +236,13 @@ public class AppClinica {
                     while (rsS.next()) {
                         mensagem = rsS.getString("mensagem");
                     }
-
+                    //mensagem = mensagem.replace("\\", "\\\\");
                     String response = mensagem.replaceAll("NW", "OK");
                     File myObj = new File("relatoriosC\\FSClinicaAceite" + id + ".txt");
                     FileWriter writer = new FileWriter(myObj);
                     writer.write(response);
                     writer.flush();
+                    writer.close();
                     s = "update Pedido"
                             + " set estado = \""+estado+"\", mensagem = '"+ response +"' where idPedido =" + id + " ;";
                     st.executeUpdate(s);
@@ -245,7 +252,7 @@ public class AppClinica {
                     ORM_O01 orm = (ORM_O01) pipeParser.parse(mensagem);
                     int numProcesso = Integer.parseInt(orm.getPATIENT().getPID().getPatientIdentifierList(0).getID().toString());
                     String query3 = "INSERT IGNORE INTO Exame " +
-                                    "(codigo_ato, ato, id_externo, medico, Paciente_id_paciente, pedido_id_pedido)" +
+                                    "(codigo_ato, ato, id_externo, medico, Paciente_idPaciente, pedido_idPedido)" +
                                     " Values ('"+ cod_exame +"', '" + desc_exame + "', " +
                                     "1, 'Tiago Carvalho', " + numProcesso + ", " + id +")";
                     st.executeUpdate(query3);
@@ -309,9 +316,11 @@ public class AppClinica {
 
                 System.out.println("O relatório foi escrito com sucesso");
             }
+            else if(opcao == 5){
+                readFiles(c);
+            }
         }
-        return  0;
-
+        return 0;
     }
 
     public static void main(String[] args){

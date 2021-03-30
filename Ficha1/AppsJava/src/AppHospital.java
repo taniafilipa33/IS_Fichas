@@ -111,13 +111,16 @@ public class AppHospital {
                     SimpleDateFormat formatter = new SimpleDateFormat(pattern);
                     String mysqlDateString = formatter.format(data);
                     String estado = orm.getORDER().getORC().getOrderControl().encode();
+                    String response = "";
                     if(estado.equals("CA")){
                         estado = "Cancelado " + mysqlDateString;
+                        response = message.replaceAll("CA", "NW");
                     }
                     else if(estado.equals("OK")){
                         estado = "Aceite " + mysqlDateString;
+                        response = message.replaceAll("OK", "NW");
                     }
-                    String response = message.replaceAll("CA", "NW");
+                    response = response.replace("\\", "\\\\");
                     String query = "select idPedido from Pedido where mensagem = '"+ response +"';";
                     ResultSet rs = st.executeQuery(query);
                     int idPedido = 0;
@@ -160,14 +163,15 @@ public class AppHospital {
         Statement st = c.createStatement();
         int opcao = 0;
         clearScreen();
-        while (opcao != 6) {
+        while (opcao != 7) {
             readFiles(c);
             System.out.println("Insira 1 para visualizar o histórico de consultas \n" +
                     "Insira 2 para efetuar pedido \n" +
                     "Insira 3 para cancelar pedidos \n" +
                     "Insira 4 para visualizar estado dos pedidos \n" +
                     "Insira 5 para visualizar o relatório recebido da clínica \n" +
-                    "Insira 6 para sair \n");
+                    "Insira 6 verfificar os ficheiros nas pastas \n" +
+                    "Insira 7 para sair \n");
             opcao = new Scanner(System.in).nextInt();
             if (opcao ==1) {
                 int id;
@@ -209,6 +213,7 @@ public class AppHospital {
                 String exame = new Scanner(System.in).nextLine();
                 ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,idPedido+1,exame,codigo, "NW",0 );
                 String mensagem = pipeParser.encode(ormMessage);
+                mensagem = mensagem.replace("\\", "\\\\");
                 System.out.println("Insira o id da consulta:");
                 int idConsulta = new Scanner(System.in).nextInt();
 
@@ -242,6 +247,7 @@ public class AppHospital {
                 while (rs.next()) {
                     mensagem = rs.getString("mensagem");
                 }
+                //mensagem = mensagem.replace("\\", "\\\\");
                 String response = mensagem.replaceAll("NW", "CA");
                 File myObj = new File("FSHospitalCA"+id+".txt");
                 FileWriter writer = new FileWriter(myObj);
@@ -285,6 +291,9 @@ public class AppHospital {
                     relatorio = rs.getString("relatorio");
                 }
                 System.out.println("Relatório: " + relatorio);
+            }
+            else if(opcao == 6){
+                readFiles(c);
             }
         }
         return 0;

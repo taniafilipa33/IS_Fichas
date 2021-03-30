@@ -1,0 +1,1 @@
+MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210330221416||ORU^R01^ORU_R01|123420210330221416|P|2.4PID|||0PV1||OORC|NW||||||||20210330221416OBR|0OBX|1|TXOBX|2|TX|||RosaOBX|3|TX|||Relatório validado por: 

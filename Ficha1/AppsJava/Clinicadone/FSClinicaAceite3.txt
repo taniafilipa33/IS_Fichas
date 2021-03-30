@@ -1,0 +1,1 @@
+MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210330221305||ORM^001^ORM_O01|123420210330221305|P|2.4PID|||456123789||^António Albertim Silva||||||Rua Fernando PessoaPV1||OORC|OK||||||||20210330221305OBR|3|||M113^pipi
