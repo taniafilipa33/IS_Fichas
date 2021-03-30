@@ -1,1 +1,0 @@
-MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210326095524||ORU^R01^ORU_R01|123420210326095524|P|2.4PID|||123||^Joseph Joestar||||||AmericaPV1||OORC|NW||||||||20210326095524OBR|2|||M123^Exame ao ToraxOBX|1|TX|||Exame ao ToraxOBX|2|TX|||qkwgdo2evOBX|3|TX|||Relatório validado por: Joaquim Alberto

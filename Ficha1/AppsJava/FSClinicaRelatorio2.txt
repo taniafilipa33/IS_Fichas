@@ -1,1 +1,0 @@
-MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210326103235||ORU^R01^ORU_R01|123420210326103235|P|2.4PID|||123||^Joseph Joestar||||||AmericaPV1||OORC|NW||||||||20210326103235OBR|2|||M123^Exame ao ToraxOBX|1|TX|||Exame ao ToraxOBX|2|TX|||Encontra-se tudo bem com o paciente. Não há sinais fora do normal no Torax.OBX|3|TX|||Relatório validado por: Joaquim Alberto

@@ -1,1 +1,0 @@
-MSH|^~\&|AppHospital|Hospital|AppClinica|Clinica|20210325193342||ORU^R01^ORU_R01|123420210325193342|P|2.4PID|||numProcesso||^name||||||adressPV1||OORC|NW||||||||20210325193342OBR|1|||M10405^Torax, uma incidenciaOBX|1|TX|||DescrOBX|2|TX|||relatorioOBX|3|TX|||Relatório validado por: Joaquim
