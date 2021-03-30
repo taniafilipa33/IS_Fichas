@@ -238,39 +238,20 @@ public class AppHospital {
 
                 String select = "SELECT * from Pedido where idPedido =" + id +";";
                 ResultSet rs = st.executeQuery(select);
-                String exame ="";
-                String codigo ="";
-                int idConsulta = 0;
+                String mensagem ="";
                 while (rs.next()) {
-                    exame = rs.getString("descExame");
-                    codigo = rs.getString("codigoExame");
-                    idConsulta = rs.getInt("idConsulta");
+                    mensagem = rs.getString("mensagem");
                 }
-
-                String select2 = "SELECT * from Consulta where idConsulta =" + idConsulta +";";
-                ResultSet rs2 = st.executeQuery(select2);
-                int idPaciente = 0;
-                while (rs2.next()) {
-                    idPaciente = rs2.getInt("idPaciente");
-                }
-
-                String select3 = "SELECT * from Paciente where idPaciente =" + idPaciente +";";
-                ResultSet rs3 = st.executeQuery(select3);
-                String nome ="";
-                String morada = "";
-                int numProcesso = 0;
-                while (rs3.next()) {
-                    nome = rs3.getString("nome");
-                    morada = rs3.getString("morada");
-                    numProcesso = rs3.getInt("numProcesso");
-                }
-                ORM_O01 ormMessage = (ORM_O01) AdtMessageFactory.createMessage("001",nome, String.valueOf(numProcesso), morada,id,exame,codigo, "CA",0 );
-                writeMessageToFile(pipeParser, ormMessage, "FSHospitalCA"+id+".txt");
+                String response = mensagem.replaceAll("NW", "CA");
+                File myObj = new File("FSHospitalCA"+id+".txt");
+                FileWriter writer = new FileWriter(myObj);
+                writer.write(response);
+                writer.flush();
                 System.out.println("O pedido com o id " + id + " foi cancelado!");
                 s = "update Pedido"
-                        + " set estado = \""+ estado +"\", mensagem = '"+ pipeParser.encode(ormMessage) +"' where idPedido =" + id + ";";
+                        + " set estado = \""+ estado +"\", mensagem = '"+ response +"' where idPedido =" + id + ";";
                 st.executeUpdate(s);
-                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, idPedido) VALUES(\""+ estado +"\",\"" + ormMessage +"\"," + id+" )";
+                String query2 = "INSERT IGNORE INTO RegistoHistorico (estadoPedido, mensagem, idPedido) VALUES(\""+ estado +"\",\"" + response +"\"," + id+" )";
                 st.executeUpdate(query2);
             } else if (opcao == 4) {
                 int id, idConsulta;
