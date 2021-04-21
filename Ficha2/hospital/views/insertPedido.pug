@@ -1,0 +1,54 @@
+extends layout
+
+block content    
+    // Blog entry  
+     
+    .w3-card-4(style="text-align:center; background-color: rgba(255, 255, 255, 0.85); margin-left: 430px; margin-right: 430px;")   
+      .w3-container(style="width:70%; display:block; margin-left:auto; margin-right:auto;")
+        form.w3-center(action="/inserirPedido" method="POST" enctype="application/json")
+            .w3-container.w3-center(id="fileInputGroup")
+                //.w3-half.w3-purple                          
+                .w3-center
+                    h4
+                        br
+                        b(style="font-family: 'Foundry Gridnik Bold'; font-size: 35px; color: #F5F5F5; text-shadow: -1.2px -1.2px 0  #484848, 1.2px -1.2px 0  #484848, -1.2px 1.2px 0  #484848, 1.9px 1.9px 0  #484848;")  Inserir Pedido
+                    hr
+                    p
+                    br
+                    .b
+                        p(style='color:red;') * Campos obrigatórios
+                    br
+                    p
+                    .div
+                        labelRequired(for="nome") Código do Exame:
+                    .div
+                        input.w3-input.w3-border.w3-round.w3-form-control(required type="text" id="nome" name="codExame")
+                    p
+                    br
+                    .div
+                        label(for="nome_completo") Descrição do Exame:
+                    .div
+                        input.w3-input.w3-border.w3-round.w3-form-control(type="text" name='descExame' id="nome_completo")
+                    p
+                    br
+                    .div
+                        label(for="nome_completo") Identificação do Paciente:
+                    .div
+                        input.w3-input.w3-border.w3-round.w3-form-control(type="text" name='idPaciente' id="nome_completo")
+                    p
+                    br
+                    .div
+                        label(for="nome_completo") Identificador da Consulta:
+                    .div
+                        input.w3-input.w3-border.w3-round.w3-form-control(type="text" name='idConsulta' id="nome_completo")
+                    
+                    br
+                   
+                    br
+                    hr(style="border-top: 1px dotted #bbb; width: 100%;")
+                    .w3.bottom   
+                        input.w3-button.w3-padding-large.w3-red.w3-border(type="submit" value="Enviar")
+                        a.w3-button.w3-red.w3-padding-large.w3-border(href='/pedidos') Cancelar  
+                    br
+                    br
+    br      

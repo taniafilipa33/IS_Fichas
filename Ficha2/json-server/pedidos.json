@@ -1,0 +1,14 @@
+{
+  "pedidos": [
+    {
+      "idPedido": 0,
+      "mensagem": "olá",
+      "estado": "pendente 20202020",
+      "data": "2020-02-02",
+      "idConsulta": 1,
+      "relatorio": null,
+      "codigoExame": "N123",
+      "descExame": "raio-x"
+    }
+  ]
+}
