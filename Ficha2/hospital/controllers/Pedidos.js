@@ -4,6 +4,31 @@ module.exports.getPedidos = async () => {
   return await executaQuery("SELECT * FROM Pedido");
 };
 
+module.exports.getLast = async () => {
+  var idJog = await executaQuery("(select max(idPedido) from Pedido)");
+  return JSON.parse(JSON.stringify(idJog))[0]["max(idPedido)"];
+};
+
+module.exports.insertPedido = async (pedido, idConsulta) => {
+  return await executaQuery(
+    "insert into Pedido(mensagem, estado, data, idConsulta,relatorio, codigoExame, descExame) values('" +
+      pedido.mensagem +
+      "','" +
+      pedido.estado +
+      "','" +
+      pedido.data +
+      "'," +
+      idConsulta +
+      "," +
+      pedido.relatorio +
+      ",'" +
+      pedido.codigoExame +
+      "','" +
+      pedido.descExame +
+      "')"
+  );
+};
+
 const executaQuery = (query) => {
   return new Promise((resove, reject) => {
     let connection = mysql.createConnection({

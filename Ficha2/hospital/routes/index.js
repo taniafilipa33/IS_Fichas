@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 var Paciente = require("../controllers/Paciente");
 var Pedido = require("../controllers/Pedidos");
+var Consulta = require("../controllers/Consulta");
+const axios = require("axios");
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index");
@@ -28,20 +30,76 @@ router.get("/inserirPedido", function (req, res, next) {
 });
 
 router.post("/inserirPedido", function (req, res, next) {
-  console.log(req.body);
-  var pedido = {};
-  Paciente.getPaciente(req.body.idPaciente).then((pac) => {
-    console.log(pac);
-    if (pac == "[]")
-      res.render("/inserirPedido", {
-        p: "Paciente Inexistente",
-        dados: req.body,
-      });
-    else {
-      pedido.idPaciente = req.body.idPaciente;
-    }
-  });
-  res.render("insertPedido");
+  var pedidos = {};
+  Paciente.getPaciente(req.body.idPaciente)
+    .then((pac) => {
+      if (pac == "") {
+        console.log("Paciente inxistente");
+        res.render("insertPedido", {
+          p: "Paciente Inexistente",
+          dados: req.body,
+        });
+      } else {
+        Consulta.getConsulta(req.body.idConsulta)
+          .then((r) => {
+            if (r == "") {
+              console.log("oioi?");
+              res.render("insertPedido", {
+                p: "Consulta Inexistente",
+                dados: req.body,
+              });
+            } else {
+              pedidos.idPaciente = JSON.parse(JSON.stringify(pac))[0][
+                "idPaciente"
+              ];
+              (pedidos.relatorio = "null"),
+                (pedidos.descExame = req.body.descExame),
+                (pedidos.codigoExame = req.body.codExame);
+              var today = new Date();
+              var dd = String(today.getDate()).padStart(2, "0");
+              var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+              var yyyy = today.getFullYear();
+              today = yyyy + "-" + mm + "-" + dd;
+              pedidos.estado = "pendente " + today;
+              pedidos.data = today;
+              (pedidos.mensagem = "teste de mensagem"),
+                (pedidos.idConsulta = JSON.parse(JSON.stringify(r))[0][
+                  "idConsulta"
+                ]);
+              Pedido.insertPedido(pedidos, pedidos.idConsulta)
+                .then((o) => {
+                  Pedido.getLast()
+                    .then((idPed) => {
+                      console.log(idPed);
+                      pedidos.idPedido = idPed;
+                      axios
+                        .post("http://localhost:3000/pedidos", { pedidos })
+                        .then(function (response) {
+                          console.log(response);
+                        })
+                        .catch(function (error) {
+                          console.log(error);
+                        });
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    });
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+
+              console.log(pedido);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 });
 
 module.exports = router;

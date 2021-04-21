@@ -1,14 +1,17 @@
 extends layout
 
 block content    
-    // Blog entry  
-     
+      
     .w3-card-4(style="text-align:center; background-color: rgba(255, 255, 255, 0.85); margin-left: 430px; margin-right: 430px;")   
       .w3-container(style="width:70%; display:block; margin-left:auto; margin-right:auto;")
         form.w3-center(action="/inserirPedido" method="POST" enctype="application/json")
             .w3-container.w3-center(id="fileInputGroup")
+            
                 //.w3-half.w3-purple                          
                 .w3-center
+                    // Blog entry  
+                    h1=p
+                    p Hospital
                     h4
                         br
                         b(style="font-family: 'Foundry Gridnik Bold'; font-size: 35px; color: #F5F5F5; text-shadow: -1.2px -1.2px 0  #484848, 1.2px -1.2px 0  #484848, -1.2px 1.2px 0  #484848, 1.9px 1.9px 0  #484848;")  Inserir Pedido

@@ -5,11 +5,7 @@ module.exports.getPacientes = async () => {
 };
 
 module.exports.getPaciente = async (id) => {
-  return JSON.parse(
-    JSON.stringify(
-      await executaQuery("SELECT * FROM Paciente where idPaciente=" + id)
-    )
-  );
+  return await executaQuery("SELECT * FROM Paciente where idPaciente=" + id);
 };
 
 const executaQuery = (query) => {
