@@ -71,10 +71,18 @@ router.post("/inserirPedido", function (req, res, next) {
                   Pedido.getLast()
                     .then((idPed) => {
                       console.log(idPed);
-                      pedidos.idPedido = idPed;
+                      pedidos.id = idPed;
                       axios
-                        .post("http://localhost:3000/pedidos", { pedidos })
+                        .post("http://localhost:3000/pedidos", {
+                          id: idPed,
+                          estado: pedidos.estado,
+                          data: pedidos.data,
+                          idConsulta: pedidos.idConsulta,
+                          codigoExame: pedidos.codigoExame,
+                          descExame: pedidos.descExame,
+                        })
                         .then(function (response) {
+                          res.redirect("/pedidos");
                           console.log(response);
                         })
                         .catch(function (error) {
