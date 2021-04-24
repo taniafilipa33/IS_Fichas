@@ -2,22 +2,11 @@
   "pedidos": [
     {
       "id": 0,
-      "mensagem": "olá",
       "estado": "pendente 20202020",
       "data": "2020-02-02",
       "idConsulta": 1,
-      "relatorio": null,
       "codigoExame": "N123",
       "descExame": "raio-x"
-    },
-    {
-      "id": 17,
-      "mensagem": "teste de mensagem",
-      "estado": "pendente 2021-04-23",
-      "idConsulta": 1,
-      "relatorio": "null",
-      "codigoExame": "123",
-      "descExame": "3"
     },
     {
       "id": 18,
@@ -29,7 +18,6 @@
     },
     {
       "id": 19,
-      "mensagem": "teste de mensagem",
       "estado": "pendente 2021-04-23",
       "data": "2021-04-23",
       "idConsulta": 1,
@@ -60,6 +48,15 @@
       "idConsulta": 1,
       "codigoExame": "1111",
       "descExame": "fr"
+    },
+    {
+      "id": 23,
+      "estado": "cancelado 2021-04-24",
+      "data": "2021-04-24",
+      "idConsulta": 1,
+      "codigoExame": "2222",
+      "descExame": "exame de teste"
     }
-  ]
+  ],
+  "exames": []
 }

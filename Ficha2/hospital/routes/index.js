@@ -18,9 +18,11 @@ router.get("/pacientes", function (req, res, next) {
 });
 
 router.get("/pedidos", function (req, res, next) {
-  Pedido.getPedidos()
+  axios
+    .get("http://localhost:3000/pedidos")
     .then((d) => {
-      res.render("pedidos", { pedidos: d });
+      //atualizar bd conforme os dados possivelmente novos aqui
+      res.render("pedidos", { pedidos: d.data });
     })
     .catch((e) => console.log(e));
 });
