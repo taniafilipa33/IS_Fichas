@@ -44,13 +44,34 @@
     },
     {
       "id": 23,
-      "estado": "cancelado 2021-04-24",
+      "estado": "aceite 2021-04-24",
       "data": "2021-04-24",
       "codigoExame": "2222",
       "descExame": "exame de teste"
     },
     {
       "id": 24,
+      "estado": "pendente 20202020",
+      "data": "2020-02-02",
+      "codigoExame": "N123",
+      "descExame": "raio-x"
+    },
+    {
+      "id": 25,
+      "estado": "pendente 20202020",
+      "data": "2020-02-02",
+      "codigoExame": "N123",
+      "descExame": "raio-x"
+    },
+    {
+      "id": 26,
+      "estado": "pendente 20202020",
+      "data": "2020-02-02",
+      "codigoExame": "N123",
+      "descExame": "raio-x"
+    },
+    {
+      "id": 27,
       "estado": "pendente 20202020",
       "data": "2020-02-02",
       "codigoExame": "N123",

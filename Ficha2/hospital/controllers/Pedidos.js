@@ -9,6 +9,22 @@ module.exports.getLast = async () => {
   return JSON.parse(JSON.stringify(idJog))[0]["max(idPedido)"];
 };
 
+module.exports.updatePeds = async (pedidos) => {
+  var p = pedidos.map(async (ped) => {
+    if (!ped.relatorio) var rel = null;
+    else var rel = ped.relatorio;
+    await executaQuery(
+      "Update Pedido set mensagem=null, estado='" +
+        ped.estado +
+        "', relatorio='" +
+        rel +
+        "' where idPedido=" +
+        ped.id
+    );
+  });
+  await Promise.all(p);
+};
+
 module.exports.insertPedido = async (pedido, idConsulta) => {
   return await executaQuery(
     "insert into Pedido(mensagem, estado, data, idConsulta,relatorio, codigoExame, descExame) values('" +

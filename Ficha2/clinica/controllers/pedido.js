@@ -24,9 +24,7 @@ module.exports.updateJsonClinica = (pedidos) => {
                 .then((e) => {
                   //se tudo correr bem faz update na BD
                   this.updatePedido(element)
-                    .then((e) => {
-                      console.log("updated");
-                    })
+                    .then((e) => {})
                     .catch((e) => console.log(e));
                 })
                 .catch((e) => {
@@ -48,9 +46,7 @@ module.exports.updateJsonClinica = (pedidos) => {
             .then((e) => {
               // se tudo corrr bem inserir na bd também
               this.insertPedido(element)
-                .then((e) => {
-                  console.log("updated");
-                })
+                .then((e) => {})
                 .catch((e) => console.log(e));
             })
             .catch((err) => console.log(err));

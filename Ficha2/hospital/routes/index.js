@@ -22,7 +22,11 @@ router.get("/pedidos", function (req, res, next) {
     .get("http://localhost:3000/pedidos")
     .then((d) => {
       //atualizar bd conforme os dados possivelmente novos aqui
-      res.render("pedidos", { pedidos: d.data });
+      Pedido.updatePeds(d.data)
+        .then((s) => {
+          res.render("pedidos", { pedidos: d.data });
+        })
+        .catch((e) => console.log(e));
     })
     .catch((e) => console.log(e));
 });
