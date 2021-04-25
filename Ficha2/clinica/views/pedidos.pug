@@ -6,9 +6,9 @@ block content
        h1 Pedidos Pendentes de Hoje
 
        br
-       table.w3-table.w3-striped.w3-center
+       input#myInput.w3-border.w3-round.w3-left(type='text' onkeyup='myFunction()' placeholder='Procure por data' title='Type in a name')
+       table#myTable.w3-table.w3-striped.w3-center
          tr
-           th Mensagem
            th Estado
            th Data
            th Relatório
@@ -17,7 +17,6 @@ block content
            th Opções
          each elemento in pedidos
            tr
-             td=elemento.mensagem
              td=elemento.estado
              td=elemento.data
              td=elemento.relatório 
@@ -26,6 +25,24 @@ block content
              td 
                a.w3-button.w3-red.w3-padding(href='/aceitar/'+elemento.id) Aceitar 	
                a.w3-button.w3-red.w3-padding(href='/delete/'+elemento.id) Cancelar
-             hr
       a.w3-button.w3-red.w3-padding(href='/') Voltar
+      script.
+        function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+        } else {
+        tr[i].style.display = "none";
+        }
+        }
+        }
+        }
       br

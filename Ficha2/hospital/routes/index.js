@@ -31,6 +31,16 @@ router.get("/pedidos", function (req, res, next) {
     .catch((e) => console.log(e));
 });
 
+router.get("/exames", function (req, res, next) {
+  axios
+    .get("http://localhost:3002/exames")
+    .then((d) => {
+      //atualizar bd conforme os dados possivelmente novos aqui
+        res.render("exames", { exames: d.data });
+    })
+    .catch((e) => console.log(e));
+});
+
 router.get("/inserirPedido", function (req, res, next) {
   res.render("insertPedido", { dados: {}, p: "Inserir Pedido" });
 });
@@ -67,7 +77,8 @@ router.post("/inserirPedido", function (req, res, next) {
               var yyyy = today.getFullYear();
               today = yyyy + "-" + mm + "-" + dd;
               pedidos.estado = "pendente " + today;
-              pedidos.data = today;
+              var dataHora = req.body.ano + "-" + req.body.mes + "-" + req.body.dia + " " + req.body.hora +":" + req.body.minuto + ":00";
+              pedidos.data = dataHora;
               (pedidos.mensagem = "teste de mensagem"),
                 (pedidos.idConsulta = JSON.parse(JSON.stringify(r))[0][
                   "idConsulta"
@@ -102,8 +113,6 @@ router.post("/inserirPedido", function (req, res, next) {
                 .catch((e) => {
                   console.log(e);
                 });
-
-              console.log(pedido);
             }
           })
           .catch((e) => {

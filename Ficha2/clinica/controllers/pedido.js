@@ -78,6 +78,20 @@ module.exports.insertPedido = async (pedido) => {
   );
 };
 
+module.exports.getPedido = async(id) => {
+  var exame =  await executaQuery(
+    "select * from Pedido where idPedido = " + id
+  )
+  return JSON.parse(JSON.stringify(exame))[0]
+}
+
+module.exports.insertRelatorio = async(relatorio, id) => {
+  console.log("sou relatorio", relatorio)
+  return await executaQuery(
+    "update Pedido set relatorio ='" + relatorio +"' where idPedido =" + id
+  )
+}
+
 module.exports.updatePedido = async (pedido) => {
   if (!pedido.relatorio) pedido.relatorio = "null";
   return await executaQuery(

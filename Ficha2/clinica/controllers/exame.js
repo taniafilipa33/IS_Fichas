@@ -1,3 +1,4 @@
+const { json } = require("express");
 var mysql = require("mysql");
 
 module.exports.insertExame = async (exame) => {
@@ -7,7 +8,7 @@ module.exports.insertExame = async (exame) => {
       "','" +
       exame.ato +
       "',1,'" +
-      exame.medico +
+      "Alberto João Henriques" +
       "'," +
       exame.Paciente_idPaciente +
       "," +
@@ -15,6 +16,20 @@ module.exports.insertExame = async (exame) => {
       ")"
   );
 };
+
+module.exports.getLast = async() => {
+  var id =  await executaQuery(
+    "select max(idExame) from Exame"
+  )
+  return JSON.parse(JSON.stringify(id))[0]["max(idExame)"]
+}
+
+module.exports.getExame = async(id) => {
+  var exame =  await executaQuery(
+    "select * from Exame where idExame = " + id
+  )
+  return JSON.parse(JSON.stringify(exame))[0]
+}
 
 const executaQuery = (query) => {
   return new Promise((resove, reject) => {

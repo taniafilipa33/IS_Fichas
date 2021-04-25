@@ -2,81 +2,88 @@
   "pedidos": [
     {
       "id": 1,
-      "estado": "pendente 20202020",
-      "data": "2020-02-02",
-      "codigoExame": "N123",
-      "descExame": "raio-x"
+      "estado": "aceite 2021-04-25",
+      "data": "2021-04-25",
+      "codigoExame": "M456",
+      "descExame": "Exame ao coração"
     },
     {
-      "id": 18,
-      "estado": "aceite 2021-04-23",
-      "data": "2021-04-23",
-      "codigoExame": "123",
-      "descExame": "3"
+      "estado": "aceite 2021-04-25",
+      "data": "2021-04-24T23:00:00.000Z",
+      "relatorio": "jhadooqu+pdjm",
+      "codigoExame": "M455",
+      "descExame": "Teste",
+      "id": 2
     },
     {
-      "id": 19,
-      "estado": "pendente 2021-04-23",
-      "data": "2021-04-23",
-      "codigoExame": "123",
-      "descExame": "3"
+      "estado": "aceite 2021-04-25",
+      "data": "2021-04-24T23:00:00.000Z",
+      "relatorio": "khojb",
+      "codigoExame": "A342",
+      "descExame": "Teste2",
+      "id": 3
     },
     {
-      "id": 20,
-      "estado": "pendente 2021-04-23",
-      "data": "2021-04-23",
-      "codigoExame": "123",
-      "descExame": "olá teste"
+      "id": 4,
+      "estado": "aceite 2021-04-25",
+      "data": "2021-04-25",
+      "codigoExame": "iiii",
+      "descExame": "ooo"
     },
     {
-      "id": 21,
-      "estado": "pendente 2021-04-23",
-      "data": "2021-04-23",
-      "codigoExame": "123",
-      "descExame": "olá teste"
+      "id": 5,
+      "estado": "pendente 2021-04-25",
+      "data": "2000-05-06",
+      "codigoExame": "M455",
+      "descExame": "Testeeee"
     },
     {
-      "id": 22,
-      "estado": "pendente 2021-04-23",
-      "data": "2021-04-23",
-      "codigoExame": "1111",
-      "descExame": "fr"
+      "id": 6,
+      "estado": "pendente 2021-04-25",
+      "data": "2000-05-06",
+      "codigoExame": "Uii55",
+      "descExame": "Teste3"
     },
     {
-      "id": 23,
-      "estado": "aceite 2021-04-24",
-      "data": "2021-04-24",
-      "codigoExame": "2222",
-      "descExame": "exame de teste"
+      "id": 7,
+      "estado": "pendente 2021-04-25",
+      "data": "2024-3-15 17:18",
+      "codigoExame": "Uhuh",
+      "descExame": "Exame ao coração"
     },
     {
-      "id": 24,
-      "estado": "pendente 20202020",
-      "data": "2020-02-02",
-      "codigoExame": "N123",
-      "descExame": "raio-x"
-    },
-    {
-      "id": 25,
-      "estado": "pendente 20202020",
-      "data": "2020-02-02",
-      "codigoExame": "N123",
-      "descExame": "raio-x"
-    },
-    {
-      "id": 26,
-      "estado": "pendente 20202020",
-      "data": "2020-02-02",
-      "codigoExame": "N123",
-      "descExame": "raio-x"
-    },
-    {
-      "id": 27,
-      "estado": "pendente 20202020",
-      "data": "2020-02-02",
-      "codigoExame": "N123",
-      "descExame": "raio-x"
+      "id": 8,
+      "estado": "pendente 2021-04-25",
+      "data": "2021-4-25 11:18:00",
+      "codigoExame": "H678",
+      "descExame": "Exame aos olhos"
     }
   ],
-  "exames": []
+  "exames": [
+    {
+      "id": 2,
+      "codigo_ato": "A342",
+      "ato": "Teste2",
+      "medico": "Alberto João Henriques",
+      "Paciente_idPaciente": 1,
+      "Pedido_idPedido": 3
+    },
+    {
+      "id": 3,
+      "codigo_ato": "M455",
+      "ato": "Teste",
+      "medico": "Alberto João Henriques",
+      "Paciente_idPaciente": 1,
+      "Pedido_idPedido": 2
+    },
+    {
+      "id": 4,
+      "codigo_ato": "M456",
+      "ato": "Exame ao coração",
+      "medico": "Alberto João Henriques",
+      "Paciente_idPaciente": 1,
+      "Pedido_idPedido": 1,
+      "data": "2021-04-25"
+    }
+  ]
 }

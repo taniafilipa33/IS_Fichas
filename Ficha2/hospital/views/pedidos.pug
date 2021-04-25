@@ -7,8 +7,9 @@ block content
        .container
          .row          
            .col-md-12
-            .main_text          
-               a(href='/inserirPedido')
+            .main_text  
+               br        
+               a.w3-button.w3-red.w3-padding(href='/inserirPedido')
                 | Inserir Novo Pedido +
 
        table.w3-table.w3-striped.w3-center
@@ -23,6 +24,5 @@ block content
              td=elemento.data
              td=elemento.codigoExame 
              td=elemento.descExame
-             hr
       a.w3-button.w3-red.w3-padding(href='/') Voltar
       br

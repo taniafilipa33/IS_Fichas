@@ -44,8 +44,35 @@ block content
                         label(for="nome_completo") Identificador da Consulta:
                     .div
                         input.w3-input.w3-border.w3-round.w3-form-control(type="text" name='idConsulta' id="nome_completo")
-                    
-                    br
+                    p
+                    hr
+                    .div
+                        label(for="data") Data:
+                    .div
+                        .w3-row-padding
+                            .w3-third
+                              select.w3-input.w3-border(class='selectAnos' type='text' name='ano')
+                                option Ano
+                            .w3-third
+                              select.w3-input.w3-border(class='1-12' type='text' name='mes')
+                                option Mês
+                            .w3-third
+                              select.w3-input.w3-border(class='1-31' type='text' min='1' max ='31' name='dia')
+                                option Dia
+                    hr
+                    p
+                    hr
+                    .div
+                        label(for="hora") Hora:
+                    .div
+                        .w3-row-padding
+                            .w3-third
+                              select.w3-input.w3-border(class='selectHoras' type='text' name='hora')
+                                option Hora
+                            .w3-third
+                              select.w3-input.w3-border(class='selectMinuto' type='text' name='minuto')
+                                option Minuto
+                    hr
                    
                     br
                     hr(style="border-top: 1px dotted #bbb; width: 100%;")
@@ -54,4 +81,35 @@ block content
                         a.w3-button.w3-red.w3-padding-large.w3-border(href='/pedidos') Cancelar  
                     br
                     br
+    script. 
+        $(function(){
+            var $selectYear = $(".selectAnos");
+            var currentYear = new Date().getFullYear();
+            for (i=currentYear;i<=2031;i++){
+                $selectYear.append($('<option></option>').val(i).html(i))
+            }
+
+            var $selectMonth = $(".1-12");
+            for (i=1;i<=12;i++){
+                $selectMonth.append($('<option></option>').val(i).html(i))
+            }
+
+            var $selectDay = $(".1-31");
+            for (i=1;i<=31;i++){
+                $selectDay.append($('<option></option>').val(i).html(i))
+            }
+        });
+    script. 
+        $(function(){
+            var $selectHour = $(".selectHoras");
+            for (i=0;i<=23;i++){
+                $selectHour.append($('<option></option>').val(i).html(i))
+            }
+
+            var $selectMinute = $(".selectMinuto");
+            console.log("olaaa")
+            for (i=0;i<=59;i++){
+                $selectMinute.append($('<option></option>').val(i).html(i))
+            }
+        });
     br      
