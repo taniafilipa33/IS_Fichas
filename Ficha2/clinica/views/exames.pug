@@ -15,7 +15,6 @@ block content
            th Identificador do Paciente 
            th Identificador do Pedido
            th Relatório
-         -var i = 0
          each elemento in exames
            tr
              td=elemento.codigo_ato
@@ -24,9 +23,7 @@ block content
              td=elemento.data
              td=elemento.Paciente_idPaciente
              td=elemento.Pedido_idPedido
-             td=relatorios[i]
-             -i=i+1
-             -console.log(i)
+             td=elemento.relatorio            
              td 
                a.w3-button.w3-red.w3-padding(href='/realizar/'+elemento.id) Realizar Exame
       a.w3-button.w3-red.w3-padding(href='/') Voltar

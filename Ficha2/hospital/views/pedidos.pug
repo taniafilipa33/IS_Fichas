@@ -18,11 +18,13 @@ block content
            th Data
            th Tipo Exame 
            th Descrição de Exame 
+           th Relatório
          each elemento in pedidos
            tr
              td=elemento.estado
              td=elemento.data
              td=elemento.codigoExame 
              td=elemento.descExame
+             td=elemento.relatorio
       a.w3-button.w3-red.w3-padding(href='/') Voltar
       br

@@ -1,4 +1,40 @@
 var mysql = require("mysql");
+const axios = require("axios");
+var Paciente = require("../controllers/Paciente");
+
+module.exports.updateJSONHospital = (pedidos) => {
+  axios
+    .get("http://localhost:3000/pedidos")
+    .then((dados) => {
+      pedidos.forEach((element) => {
+        dados.data.forEach((pped) => {
+          if (element.id == pped.id) {
+            console.log(pped);
+            if (element.relatorio) {
+              //se tiver relatorio atualiza
+
+              axios
+                .put("http://localhost:3000/pedidos/" + element.id, {
+                  id: element.id,
+                  estado: element.estado,
+                  data: element.data,
+                  relatorio: element.relatorio,
+                  codigoExame: element.codigoExame,
+                  descExame: element.descExame,
+                })
+                .then((e) => {})
+                .catch((e) => {
+                  console.log(e);
+                });
+            }
+          }
+        });
+      });
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+};
 
 module.exports.getPedidos = async () => {
   return await executaQuery("SELECT * FROM Pedido");
