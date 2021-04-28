@@ -1,90 +1,39 @@
 {
   "pedidos": [
     {
-      "id": 28,
-      "estado": "aceite 2021-04-25",
-      "data": "2029-07-11T12:08:00.000Z",
-      "relatorio": "final trail",
-      "codigoExame": "123",
-      "descExame": "teste telefon"
+      "id": 1,
+      "estado": "aceite 2021-04-28",
+      "data": "2023-05-05T09:30:00.000Z",
+      "relatorio": "Após análise de resultados é concluído que  paciente não apresenta qualquer anomalia.",
+      "codigoExame": "AB2G",
+      "descExame": "Exame de Cardiologia "
     },
     {
-      "id": 29,
-      "estado": "cancelado 2021-04-25",
-      "data": "2026-6-12 16:15:00",
-      "codigoExame": "1233456",
-      "descExame": "ets"
-    },
-    {
-      "id": 30,
-      "estado": "aceite 2021-04-25",
-      "data": "2029-12-18 19:17:00",
-      "codigoExame": "1",
-      "descExame": "olá teste"
-    },
-    {
-      "id": 31,
-      "estado": "aceite 2021-04-25",
-      "data": "2031-9-17 16:19:00",
+      "id": 3,
+      "estado": "cancelado 2021-04-28",
+      "data": "2026-5-11 10:13:00",
       "idPaciente": "1",
-      "codigoExame": "2",
-      "descExame": "teste de Primeira inserção de um pedido"
+      "codigoExame": "KJU7",
+      "descExame": "Análises Clinicas"
+    },
+    {
+      "id": 2,
+      "estado": "pendente 2021-04-28",
+      "data": "2029-4-6 4:0:00",
+      "idPaciente": "1",
+      "codigoExame": "MG4F",
+      "descExame": "Exame de Oftalmologia"
     }
   ],
   "exames": [
     {
-      "id": 6,
-      "codigo_ato": "123",
-      "ato": "teste telefon",
+      "id": 1,
+      "codigo_ato": "AB2G",
+      "ato": "Exame de Cardiologia ",
       "medico": "Alberto João Henriques",
-      "Paciente_idPaciente": 1,
-      "Pedido_idPedido": 28,
-      "data": "2029-7-11 13:8:00"
-    },
-    {
-      "id": 7,
-      "codigo_ato": "1233456",
-      "ato": "ets",
-      "medico": "Alberto João Henriques",
-      "Paciente_idPaciente": 1,
-      "Pedido_idPedido": 29,
-      "data": "2026-6-12 16:15:00"
-    },
-    {
-      "id": 8,
-      "codigo_ato": "1",
-      "ato": "olá teste",
-      "medico": "Alberto João Henriques",
-      "Paciente_idPaciente": 1,
-      "Pedido_idPedido": 30,
-      "data": "2029-12-18 19:17:00"
-    },
-    {
-      "id": 9,
-      "codigo_ato": "1",
-      "ato": "olá teste",
-      "medico": "Alberto João Henriques",
-      "Paciente_idPaciente": 1,
-      "Pedido_idPedido": 30,
-      "data": "2029-12-18 19:17:00"
-    },
-    {
-      "id": 10,
-      "codigo_ato": "1",
-      "ato": "olá teste",
-      "medico": "Alberto João Henriques",
-      "Paciente_idPaciente": 1,
-      "Pedido_idPedido": 30,
-      "data": "2029-12-18 19:17:00"
-    },
-    {
-      "id": 11,
-      "codigo_ato": "2",
-      "ato": "teste de Primeira inserção de um pedido",
-      "medico": "Alberto João Henriques",
-      "Paciente_idPaciente": 1,
-      "Pedido_idPedido": 31,
-      "data": "2031-9-17 16:19:00"
+      "Paciente_idPaciente": "1",
+      "Pedido_idPedido": 1,
+      "data": "2023-5-5 10:30:00"
     }
   ]
 }

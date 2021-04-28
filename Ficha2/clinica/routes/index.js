@@ -147,7 +147,7 @@ router.get("/aceitar/:id", function (req, res, next) {
             codigo_ato: pedido.codigoExame,
             ato: pedido.descExame,
             medico: "Alberto João Henriques",
-            Paciente_idPaciente: 1,
+            Paciente_idPaciente: pedido.idPaciente,
             Pedido_idPedido: pedido.id,
           };
           Exame.insertExame(exame)
@@ -159,7 +159,7 @@ router.get("/aceitar/:id", function (req, res, next) {
                     codigo_ato: exame.codigo_ato,
                     ato: pedido.descExame,
                     medico: "Alberto João Henriques",
-                    Paciente_idPaciente: 1,
+                    Paciente_idPaciente: pedido.idPaciente,
                     Pedido_idPedido: pedido.id,
                     data: pedido.data,
                   });
