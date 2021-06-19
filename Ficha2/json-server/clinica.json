@@ -1,39 +1,23 @@
 {
   "pedidos": [
     {
-      "id": 1,
-      "estado": "aceite 2021-04-28",
-      "data": "2023-05-05T09:30:00.000Z",
-      "relatorio": "Após análise de resultados é concluído que  paciente não apresenta qualquer anomalia.",
-      "codigoExame": "AB2G",
-      "descExame": "Exame de Cardiologia "
-    },
-    {
-      "id": 3,
-      "estado": "cancelado 2021-04-28",
-      "data": "2026-5-11 10:13:00",
-      "idPaciente": "1",
-      "codigoExame": "KJU7",
-      "descExame": "Análises Clinicas"
-    },
-    {
-      "id": 2,
-      "estado": "pendente 2021-04-28",
-      "data": "2029-4-6 4:0:00",
-      "idPaciente": "1",
-      "codigoExame": "MG4F",
-      "descExame": "Exame de Oftalmologia"
+      "id": 5,
+      "estado": "aceite 2021-05-07",
+      "data": "2027-06-14T15:14:00.000Z",
+      "relatorio": "Tudo bem",
+      "codigoExame": "CRD",
+      "descExame": "Radiologia"
     }
   ],
   "exames": [
     {
-      "id": 1,
-      "codigo_ato": "AB2G",
-      "ato": "Exame de Cardiologia ",
+      "id": 2,
+      "codigo_ato": "CRD",
+      "ato": "Radiologia",
       "medico": "Alberto João Henriques",
       "Paciente_idPaciente": "1",
-      "Pedido_idPedido": 1,
-      "data": "2023-5-5 10:30:00"
+      "Pedido_idPedido": 5,
+      "data": "2027-6-14 16:14:00"
     }
   ]
 }
